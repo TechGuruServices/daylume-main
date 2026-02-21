@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { supabase } from "$lib/supabase";
+    import { supabase, isSupabaseConfigured } from "$lib/supabase";
     import { goto } from "$app/navigation";
     import { userStore } from "$lib/user";
 
@@ -14,6 +14,13 @@
         loading = true;
         error = "";
         message = "";
+
+        // Check if Supabase is configured
+        if (!isSupabaseConfigured) {
+            error = "Cloud authentication is not configured. Please use local mode.";
+            loading = false;
+            return;
+        }
 
         try {
             if (isSignUp) {

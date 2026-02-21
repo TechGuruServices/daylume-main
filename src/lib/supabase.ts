@@ -15,7 +15,7 @@ if (!supabaseConfigured) {
 }
 
 // Create a real client only when credentials are available.
-// When not configured, create a placeholder client that won't crash.
+// When not configured, create a mock client that throws helpful errors.
 export const supabase: SupabaseClient = supabaseConfigured
     ? createClient(supabaseUrl, supabaseAnonKey, {
         auth: {
@@ -27,7 +27,7 @@ export const supabase: SupabaseClient = supabaseConfigured
             flowType: 'pkce'
         }
     })
-    : createClient('https://placeholder.supabase.co', 'placeholder-key', {
+    : createClient('https://disabled.supabase.co', 'disabled-key', {
         auth: {
             persistSession: false,
             autoRefreshToken: false,
