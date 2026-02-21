@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="utf-8" />
+    
+    <!-- Critical: Preconnect early for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
+    <!-- DNS Prefetch for Supabase -->
+    <link rel="dns-prefetch" href="https://supabase.co">
+    
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    
+    <!-- Apple PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Daylume" />
+    
+    <!-- Apple Splash Screens for iPhone -->
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-2796-1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-1290-2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-2556-1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-1179-2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-2532-1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash/apple-splash-1170-2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    
+    <!-- Optimized Font Loading: Only essential weights, font-display: swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for non-JS -->
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <meta name="theme-color" content="#8B5CF6" />
+    <meta name="description" content="Daylume – Bring Your Day Into Focus. Your personal daily planner with AI assistance." />
+    
+    <!-- Open Graph / Facebook / WhatsApp / Discord / Slack / iMessage -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Daylume" />
+    <meta property="og:url" content="https://daylume.pages.dev/" />
+    <meta property="og:title" content="Daylume – Bring Your Day Into Focus" />
+    <meta property="og:description" content="Your personal daily planner with AI assistance. Manage tasks, habits, goals, and journal entries all in one beautiful app." />
+    <meta property="og:image" content="https://daylume.pages.dev/og-image.png" />
+    <meta property="og:image:secure_url" content="https://daylume.pages.dev/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Daylume - AI-powered daily planner for tasks, habits, goals, and journal" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@daylume" />
+    <meta name="twitter:title" content="Daylume – Bring Your Day Into Focus" />
+    <meta name="twitter:description" content="Your personal daily planner with AI assistance." />
+    <meta name="twitter:image" content="https://daylume.pages.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="Daylume - AI-powered daily planner" />
+    
+    <!-- Additional SEO -->
+    <link rel="canonical" href="https://daylume.pages.dev/" />
+    
+    <title>Daylume – Bring Your Day Into Focus</title>
+    %sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover" class="bg-[#020617] text-white">
+    <div class="contents">%sveltekit.body%</div>
+</body>
+
+</html>
