@@ -11,11 +11,11 @@
 	import NotificationSettings from "$lib/components/NotificationSettings.svelte";
 	import { widgetStore } from "$lib/widgets";
 	import type { CalendarEvent, Task, Habit, HabitLog, Goal, InboxItem } from "$lib/types";
-	import { 
-		getTasks, 
+	import {
+		getTasks,
 		updateTask,
-		getHabits, 
-		getHabitLogs, 
+		getHabits,
+		getHabitLogs,
 		getOrCreateHabitLog,
 		updateHabitLog,
 		getActiveGoals,
@@ -23,13 +23,17 @@
 		addTask
 	} from "$lib/storage";
 	import { showToast } from "$lib/toast";
+
+	// Export props that SvelteKit passes to page
+	export let data: any = undefined;
+	export let params: any = undefined;
 	import { hapticFeedback } from "$lib/haptics";
-	import { 
-		DashboardSkeleton, 
-		TaskSkeleton, 
-		HabitSkeleton, 
-		EventSkeleton, 
-		GoalSkeleton 
+	import {
+		DashboardSkeleton,
+		TaskSkeleton,
+		HabitSkeleton,
+		EventSkeleton,
+		GoalSkeleton
 	} from "$lib/components/skeletons";
 
 	let eventsToday: CalendarEvent[] = [];
@@ -43,18 +47,18 @@
 	let todayStr = "";
 	let currentTime = "";
 	let showWeeklyReview = false;
-	
+
 	// Loading states
 	let isLoading = true;
 	let eventsLoading = true;
 	let tasksLoading = true;
 	let habitsLoading = true;
 	let goalsLoading = true;
-	
+
 	// Quick Capture
 	let showQuickCapture = false;
 	let quickCaptureText = "";
-	
+
 	// Widget System
 	let widgetEditMode = false;
 	let showWidgetPicker = false;
@@ -76,17 +80,17 @@
 
 		// Load local data
 		loadLocalData();
-		
+
 		// Mark overall loading complete after a brief delay for smooth transition
 		setTimeout(() => {
 			isLoading = false;
 		}, 300);
-		
+
 		// Check for Quick Capture PWA shortcut
 		if ($page.url.searchParams.get('capture') === 'true') {
 			showQuickCapture = true;
 		}
-		
+
 		// Check for widget mode preference
 		const savedViewMode = localStorage.getItem('daylume-view-mode');
 		if (savedViewMode === 'widgets') {
@@ -97,13 +101,13 @@
 			if (timeInterval) clearInterval(timeInterval);
 		};
 	});
-	
+
 	function toggleViewMode() {
 		viewMode = viewMode === 'classic' ? 'widgets' : 'classic';
 		localStorage.setItem('daylume-view-mode', viewMode);
 		hapticFeedback.tap();
 	}
-	
+
 	function toggleWidgetEditMode() {
 		widgetEditMode = !widgetEditMode;
 		hapticFeedback.tap();
@@ -117,7 +121,7 @@
 			showToast("error", "Please enter something to capture");
 			return;
 		}
-		
+
 		// Create a new task from the quick capture
 		const newTask: Task = {
 			id: Math.random().toString(36).substring(7),
@@ -126,7 +130,7 @@
 			status: "pending",
 			createdAt: new Date().toISOString(),
 		};
-		
+
 		addTask(newTask);
 		hapticFeedback.success();
 		showToast("success", "Captured to tasks! ✨");
@@ -138,7 +142,7 @@
 	function updateGreetingAndTime() {
 		const now = new Date();
 		const hour = now.getHours();
-		
+
 		if (hour < 12) greeting = "Good morning";
 		else if (hour < 17) greeting = "Good afternoon";
 		else if (hour < 21) greeting = "Good evening";
@@ -181,7 +185,7 @@
 		tasksLoading = true;
 		habitsLoading = true;
 		goalsLoading = true;
-		
+
 		// Load tasks
 		const allTasks = getTasks();
 		tasksToday = allTasks.filter(t => t.dueDate === todayStr && t.status !== 'completed');
@@ -231,7 +235,7 @@
 
 	function toggleTaskComplete(task: Task) {
 		const newStatus = task.status === 'completed' ? 'pending' : 'completed';
-		updateTask(task.id, { 
+		updateTask(task.id, {
 			status: newStatus,
 			completedAt: newStatus === 'completed' ? new Date().toISOString() : undefined
 		});
@@ -410,7 +414,7 @@
 				Widgets
 			</button>
 		</div>
-		
+
 		<div class="flex items-center gap-2">
 			{#if viewMode === 'widgets'}
 				<button
@@ -575,7 +579,7 @@
 								</button>
 							</div>
 							<div class="relative h-2 bg-white/10 rounded-full overflow-hidden">
-								<div 
+								<div
 									class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
 									style="width: {habitProgress}%"
 								></div>
@@ -622,7 +626,7 @@
 			{:else if eventsToday.length > 0}
 				<div class="space-y-1">
 					{#each eventsToday as event (event.id)}
-	
+
 						<div class="timeline-item">
 							<div class="flex items-start gap-3">
 								<div class="text-sm text-gray-400 w-16 flex-shrink-0 pt-0.5">
@@ -674,7 +678,7 @@
 			{:else if goals.length > 0}
 				<div class="space-y-4">
 					{#each goals as goal (goal.id)}
-	
+
 						<a href="/goals" class="block p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/8 transition-colors group">
 							<div class="flex items-center gap-3 mb-3">
 								<div class="w-10 h-10 rounded-xl bg-gradient-to-br {goalCategoryColors[goal.category]} flex items-center justify-center shadow-lg">
@@ -687,7 +691,7 @@
 								<span class="text-lg font-bold text-primary">{goal.progress}%</span>
 							</div>
 							<div class="relative h-2 bg-white/10 rounded-full overflow-hidden">
-								<div 
+								<div
 									class="absolute inset-y-0 left-0 bg-gradient-to-r {goalCategoryColors[goal.category]} rounded-full transition-all duration-500"
 									style="width: {goal.progress}%"
 								></div>
@@ -742,7 +746,7 @@
 			</div>
 		</div>
 	{/if}
-	
+
 	{/if}
 	<!-- End of Classic View conditional -->
 
@@ -770,22 +774,22 @@
 <BottomSheet bind:open={showQuickCapture} title="Quick Capture" snapPoints={[0.4, 0.6]}>
 	<div class="space-y-4">
 		<p class="text-gray-400 text-sm">Quickly capture a thought, task, or idea</p>
-		
+
 		<textarea
 			bind:value={quickCaptureText}
 			placeholder="What's on your mind?"
 			rows="4"
 			class="glass-input w-full resize-none text-lg"
 		></textarea>
-		
+
 		<div class="flex gap-3">
-			<button 
+			<button
 				on:click={() => showQuickCapture = false}
 				class="btn btn-secondary flex-1"
 			>
 				Cancel
 			</button>
-			<button 
+			<button
 				on:click={handleQuickCapture}
 				class="btn btn-primary flex-1"
 			>

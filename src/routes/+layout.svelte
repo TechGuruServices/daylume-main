@@ -11,6 +11,10 @@
 	import { onMount, onDestroy } from "svelte";
 
 	import { initTheme } from "$lib/theme";
+
+	// Export props that SvelteKit passes to layout
+	export let data: any = undefined;
+	export let params: any = undefined;
 	import { userStore } from "$lib/user";
 	import { searchAll, type SearchResult } from "$lib/search";
 	import {
@@ -27,7 +31,7 @@
 	import { unlockAudio, stopAlarmSound, playSound } from "$lib/audio";
 	import { showToast } from "$lib/toast";
 	import type { Alarm } from "$lib/types";
-	
+
 	// Import new alarm service
 	import {
 		initAlarmService,
@@ -46,11 +50,11 @@
 	let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let authInitialized = false;
 	let searchInput: HTMLInputElement;
-	
+
 	// Splash screen state
 	let showSplash = false;
 	let appReady = false;
-	
+
 	// PWA install prompt
 	let deferredInstallPrompt: any = null;
 	let showInstallBanner = false;
@@ -88,7 +92,7 @@
 		}
 		goto("/login");
 	}
-	
+
 	// Load user profile from cache or Supabase
 	async function loadUserProfile(userId: string) {
 		// Try cache first for instant UI
@@ -103,14 +107,14 @@
 				}
 			}
 		}
-		
+
 		// Fetch fresh profile from Supabase
 		const { data: profile, error } = await supabase
 			.from('profiles')
 			.select('*')
 			.eq('id', userId)
 			.single();
-		
+
 		if (profile && !error) {
 			const userProfile = {
 				name: profile.name || '',
@@ -121,7 +125,7 @@
 				plan: profile.plan || 'free'
 			};
 			userStore.set(userProfile);
-			
+
 			// Cache for next load
 			if (browser) {
 				localStorage.setItem('daylume-user-profile', JSON.stringify(userProfile));
@@ -177,18 +181,18 @@
 	onMount(() => {
 		initTheme();
 		unlockAudio();
-		
+
 		// Request notification permission
 		requestNotificationPermission();
-		
+
 		// Initialize the alarm service with Web Worker and Wake Lock support
 		initAlarmService();
-		
+
 		// Listen for keyboard shortcuts
 		window.addEventListener('keydown', handleKeydown);
-		
+
 		// PWA install prompt
-		const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+		const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
 					  (window.navigator as any).standalone === true;
 		if (!isPWA) {
 			window.addEventListener('beforeinstallprompt', (e: Event) => {
@@ -201,10 +205,10 @@
 				}
 			});
 		}
-		
+
 		// Initialize auth and app state
 		(async () => {
-		
+
 		// Initialize auth session from storage FIRST
 		const session = await initializeAuth();
 		if (session?.user) {
@@ -213,10 +217,10 @@
 			await migrateData(session.user.id);
 		}
 		authInitialized = true;
-		
+
 		// Check if splash screen should be shown (first visit or PWA launch)
 		const splashShown = localStorage.getItem('daylume_splash_shown');
-		
+
 		// Show splash on first visit OR when launching as PWA
 		if (!splashShown || isPWA) {
 			showSplash = true;
@@ -229,7 +233,7 @@
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			console.log('Auth state changed:', event);
-			
+
 			if (event === "SIGNED_OUT") {
 				isAuthenticated = false;
 				userStore.set(null);
@@ -251,7 +255,7 @@
 			window.removeEventListener('keydown', handleKeydown);
 		};
 	});
-	
+
 	function handleSplashComplete() {
 		showSplash = false;
 		appReady = true;
@@ -323,7 +327,7 @@
 						Bring Your Day Into Focus
 					</p>
 				</div>
-				
+
 				<!-- Mobile Close Button -->
 				<button
 					class="lg:hidden ml-auto w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white active:scale-95 transition-all"
@@ -501,7 +505,7 @@
 							<SyncStatus />
 						</div>
 					</div>
-					
+
 					<div class="relative">
 						<button
 							on:click={() =>
@@ -648,15 +652,15 @@
 				</div>
 				<div class="absolute inset-0 rounded-full bg-primary/20 animate-ping"></div>
 			</div>
-			
+
 			<div class="text-6xl font-heading font-bold mb-4 tracking-tight">
 				{$ringingAlarm.time}
 			</div>
-			
+
 			<div class="text-xl text-gray-300 mb-12">
 				{$ringingAlarm.label || "Alarm"}
 			</div>
-			
+
 			<div class="flex gap-4 justify-center">
 				<button
 					on:click={() => snoozeAlarm()}
@@ -690,12 +694,12 @@
 		opacity: 1;
 		transition: opacity 0.5s ease-out;
 	}
-	
+
 	.app-hidden {
 		opacity: 0;
 		pointer-events: none;
 	}
-	
+
 	.app-ready {
 		opacity: 1;
 		pointer-events: auto;
