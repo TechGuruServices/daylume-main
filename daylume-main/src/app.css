@@ -27,8 +27,6 @@
 
     html {
         scroll-behavior: smooth;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -76,10 +74,6 @@
     @media (max-width: 768px) {
         ::-webkit-scrollbar {
             display: none;
-        }
-
-        * {
-            scrollbar-width: none;
         }
     }
 }
@@ -387,7 +381,6 @@
     /* Smooth scroll container */
     .scroll-smooth {
         scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
     }
 
     /* Hardware acceleration for animations */
