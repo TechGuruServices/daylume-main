@@ -15,7 +15,7 @@
         saveThemeSettings,
     } from "$lib/storage";
     import { AI_MODELS } from "$lib/ai-providers";
-    import { encrypt, decrypt } from "$lib/encryption";
+
     import { showToast } from "$lib/toast";
     import { themeStore, updateTheme } from "$lib/theme";
     import {
@@ -25,8 +25,7 @@
     } from "$lib/smart-notifications";
 
     let settings: AppSettings;
-    let apiKeyVisible = false;
-    let apiKeyInput = "";
+
     let selectedModel = "llama3.2";
     let selectedVisualTheme: VisualTheme = "default";
 
@@ -112,11 +111,6 @@
         // Check notification permission
         if (typeof window !== "undefined" && "Notification" in window) {
             notificationPermission = Notification.permission;
-        }
-
-        // Decrypt API key for display
-        if (settings.ai.apiKey) {
-            apiKeyInput = await decrypt(settings.ai.apiKey);
         }
     });
 
@@ -308,77 +302,27 @@
     }
 
     async function handleSaveSettings() {
-        if (!apiKeyInput.trim()) {
-            showToast("error", "Please enter an API key");
-            return;
-        }
-
-        const encryptedKey = await encrypt(apiKeyInput);
         const newSettings: AppSettings = {
             ...settings,
             ai: {
-                apiKey: encryptedKey,
                 model: selectedModel,
             },
         };
 
         saveSettings(newSettings);
         settings = newSettings;
-        showToast("success", "Settings saved");
+        showToast("success", "AI model saved: " + selectedModel);
     }
 
     let testingApi = false;
-    async function handleTestApiKey() {
-        if (!apiKeyInput.trim()) {
-            showToast("error", "Please enter an API key first");
-            return;
-        }
-
+    async function handleTestConnection() {
         testingApi = true;
         try {
-            const modelConfig =
-                AI_MODELS.find((m) => m.id === selectedModel) || AI_MODELS[0];
-            console.log("[Test] Using model:", selectedModel);
-            console.log("[Test] Provider:", modelConfig.provider);
-            console.log(
-                "[Test] API Key (first 15 chars):",
-                apiKeyInput.substring(0, 15) + "...",
-            );
-
-            let response;
-            let data;
-
-            // Route HuggingFace through server to avoid CORS
-            if (modelConfig.provider === "HuggingFace") {
-                console.log("[Test] Using server proxy for HuggingFace");
-                response = await fetch("/api/chat", {
+            const response = await fetch(
+                "http://localhost:11434/v1/chat/completions",
+                {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        message: 'Say "test successful" in 2 words',
-                        model: selectedModel,
-                        apiKey: apiKeyInput,
-                    }),
-                });
-                data = await response.json().catch(() => ({}));
-
-                if (response.ok && data.reply) {
-                    showToast(
-                        "success",
-                        `✅ API working! Response: ${data.reply.substring(0, 50)}`,
-                    );
-                } else {
-                    const errorMsg = data?.error || `Error ${response.status}`;
-                    showToast("error", `❌ API Error: ${errorMsg}`);
-                }
-            } else {
-                // Direct call for OpenAI/OpenRouter (they support CORS)
-                response = await fetch(modelConfig.endpoint, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${apiKeyInput}`,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
@@ -391,33 +335,34 @@
                         ],
                         max_tokens: 20,
                     }),
-                });
+                },
+            );
 
-                data = await response.json().catch(() => ({}));
-                console.log("[Test] Response:", response.status, data);
+            const data = await response.json().catch(() => ({}));
 
-                if (response.ok) {
-                    const reply =
-                        data?.choices?.[0]?.message?.content || "Connected!";
-                    showToast(
-                        "success",
-                        `✅ API working! Response: ${reply.substring(0, 50)}`,
-                    );
-                } else {
-                    const errorMsg =
-                        data?.error?.message ||
-                        data?.error ||
-                        data?.message ||
-                        `Error ${response.status}`;
-                    showToast(
-                        "error",
-                        `❌ API Error: ${typeof errorMsg === "string" ? errorMsg : JSON.stringify(errorMsg)}`,
-                    );
-                }
+            if (response.ok) {
+                const reply =
+                    data?.choices?.[0]?.message?.content || "Connected!";
+                showToast(
+                    "success",
+                    `✅ Ollama connected! Response: ${reply.substring(0, 50)}`,
+                );
+            } else {
+                const errorMsg =
+                    data?.error?.message ||
+                    data?.error ||
+                    `Error ${response.status}. Make sure you have pulled the model: ollama pull ${selectedModel}`;
+                showToast(
+                    "error",
+                    `❌ ${typeof errorMsg === "string" ? errorMsg : JSON.stringify(errorMsg)}`,
+                );
             }
         } catch (error) {
             console.error("[Test] Failed:", error);
-            showToast("error", `❌ Connection failed: ${error}`);
+            showToast(
+                "error",
+                `❌ Cannot connect to Ollama. Make sure it's running: ollama serve`,
+            );
         } finally {
             testingApi = false;
         }
@@ -486,17 +431,18 @@
 
     function getSelectedModelInfo() {
         const model = AI_MODELS.find((m) => m.id === selectedModel);
-        return model ? `${model.name} via ${model.provider}` : selectedModel;
+        return model ? `${model.name} (Ollama Local)` : selectedModel;
     }
 
-    // Group models by provider for display
-    function getModelsByProvider() {
+    // Group models by category for display
+    function getModelsByCategory() {
         const grouped: Record<string, (typeof AI_MODELS)[number][]> = {};
         AI_MODELS.forEach((model) => {
-            if (!grouped[model.provider]) {
-                grouped[model.provider] = [];
+            const cat = (model as any).category || "General";
+            if (!grouped[cat]) {
+                grouped[cat] = [];
             }
-            grouped[model.provider].push(model);
+            grouped[cat].push(model);
         });
         return grouped;
     }
@@ -1102,7 +1048,7 @@
             >
                 <span class="mdi mdi-robot-outline text-primary text-xl"></span>
             </div>
-            AI Assistant Configuration
+            AI Assistant — Local Ollama
         </h3>
 
         <div class="space-y-6">
@@ -1114,54 +1060,30 @@
                     class="mdi mdi-information-outline text-info text-xl mt-0.5"
                 ></span>
                 <div class="text-sm text-gray-300 leading-relaxed">
-                    <strong>Universal API:</strong> Enter your API key from OpenAI
-                    or OpenRouter. OpenAI keys work with GPT models. OpenRouter keys
-                    work with all models including Claude, Llama, and Gemini.
+                    <strong>100% Local & Private:</strong> Daylume uses
+                    <a
+                        href="https://ollama.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary hover:underline">Ollama</a
+                    >
+                    to run AI models entirely on your machine. No API keys needed,
+                    no data leaves your device. Install Ollama, pull a model (e.g.
+                    <code class="text-primary">ollama pull llama3.2</code>), and
+                    you're ready!
                 </div>
             </div>
 
-            <!-- API Key -->
-            <div class="space-y-2">
-                <label
-                    class="block text-sm font-medium text-gray-300"
-                    for="api-key"
-                >
-                    API Key *
-                </label>
-                <div class="relative">
-                    {#if apiKeyVisible}
-                        <input
-                            id="api-key"
-                            type="text"
-                            bind:value={apiKeyInput}
-                            placeholder="sk-... or your OpenRouter key"
-                            class="glass-input pr-12 font-mono text-sm"
-                        />
-                    {:else}
-                        <input
-                            id="api-key"
-                            type="password"
-                            bind:value={apiKeyInput}
-                            placeholder="sk-... or your OpenRouter key"
-                            class="glass-input pr-12 font-mono text-sm"
-                        />
-                    {/if}
-                    <button
-                        type="button"
-                        on:click={() => (apiKeyVisible = !apiKeyVisible)}
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                    >
-                        <span
-                            class="mdi mdi-eye{apiKeyVisible
-                                ? '-off'
-                                : ''} text-xl"
-                        ></span>
-                    </button>
+            <!-- Ollama Status Tip -->
+            <div class="p-3 bg-white/5 rounded-xl flex items-center gap-3">
+                <span class="mdi mdi-server-network text-emerald-400 text-lg"
+                ></span>
+                <div class="text-xs text-gray-400">
+                    Ollama must be running at <code class="text-gray-300"
+                        >http://localhost:11434</code
+                    >. Start it with:
+                    <code class="text-primary">ollama serve</code>
                 </div>
-                <p class="text-xs text-gray-500 flex items-center gap-1">
-                    <span class="mdi mdi-shield-lock-outline text-xs"></span>
-                    Your API key is encrypted and stored locally in your browser
-                </p>
             </div>
 
             <!-- Model Selection -->
@@ -1170,15 +1092,15 @@
                     class="block text-sm font-medium text-gray-300"
                     for="ai-model"
                 >
-                    AI Model *
+                    Ollama Model
                 </label>
                 <select
                     id="ai-model"
                     bind:value={selectedModel}
                     class="glass-input text-sm cursor-pointer"
                 >
-                    {#each Object.entries(getModelsByProvider()) as [provider, models]}
-                        <optgroup label={provider}>
+                    {#each Object.entries(getModelsByCategory()) as [category, models]}
+                        <optgroup label={category}>
                             {#each models as model}
                                 <option value={model.id}>{model.name}</option>
                             {/each}
@@ -1186,50 +1108,48 @@
                     {/each}
                 </select>
                 <p class="text-xs text-gray-500">
-                    Selected: {getSelectedModelInfo()}
+                    Selected: {getSelectedModelInfo()} — Pull this model:
+                    <code class="text-gray-400"
+                        >ollama pull {selectedModel}</code
+                    >
                 </p>
             </div>
 
-            <!-- API Key Sources -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a
-                    href="https://platform.openai.com/api-keys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all flex items-center gap-3"
+            <!-- Quick Setup -->
+            <div class="p-4 rounded-2xl border border-white/5 bg-white/5">
+                <h4
+                    class="font-bold text-sm text-white mb-3 flex items-center gap-2"
                 >
-                    <div
-                        class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center"
-                    >
-                        <span class="text-lg">🤖</span>
-                    </div>
-                    <div>
-                        <div class="font-bold text-sm">OpenAI</div>
-                        <div class="text-xs text-gray-400">Get API key →</div>
-                    </div>
-                </a>
-                <a
-                    href="https://openrouter.ai/keys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all flex items-center gap-3"
-                >
-                    <div
-                        class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center"
-                    >
-                        <span class="text-lg">🔀</span>
-                    </div>
-                    <div>
-                        <div class="font-bold text-sm">OpenRouter</div>
-                        <div class="text-xs text-gray-400">Get API key →</div>
-                    </div>
-                </a>
+                    <span class="mdi mdi-rocket-launch text-primary"></span>
+                    Quick Setup
+                </h4>
+                <div class="text-xs text-gray-400 space-y-2 font-mono">
+                    <p>
+                        1. Install Ollama → <a
+                            href="https://ollama.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-primary hover:underline">ollama.com</a
+                        >
+                    </p>
+                    <p>
+                        2. Pull a model → <code class="text-primary"
+                            >ollama pull {selectedModel}</code
+                        >
+                    </p>
+                    <p>
+                        3. Start Ollama → <code class="text-primary"
+                            >ollama serve</code
+                        >
+                    </p>
+                    <p>4. Select your model above → Save & chat!</p>
+                </div>
             </div>
 
             <div class="pt-4 space-y-3">
                 <button
-                    on:click={handleTestApiKey}
-                    disabled={testingApi || !apiKeyInput.trim()}
+                    on:click={handleTestConnection}
+                    disabled={testingApi}
                     class="btn w-full py-3 text-base border-2 border-primary/50 text-primary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {#if testingApi}
@@ -1237,7 +1157,7 @@
                         Testing...
                     {:else}
                         <span class="mdi mdi-connection"></span>
-                        Test API Connection
+                        Test Ollama Connection
                     {/if}
                 </button>
                 <button

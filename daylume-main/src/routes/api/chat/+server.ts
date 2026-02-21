@@ -1,5 +1,4 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
 
 // Disable prerendering for API routes
 export const prerender = false;
@@ -13,41 +12,24 @@ type ChatRequestBody = {
 	message: string;
 	history?: HistoryItem[];
 	model?: string;
-	apiKey?: string; // User-provided API key (optional, falls back to env)
 	systemPrompt?: string;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-	// 1) Parse JSON body first to get potential user API key
+	// 1) Parse JSON body
 	let body: ChatRequestBody;
 	try {
 		body = (await request.json()) as ChatRequestBody;
 	} catch (e) {
-		console.error('[HF] Invalid JSON body:', e);
+		console.error('[Ollama] Invalid JSON body:', e);
 		return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json' }
 		});
 	}
 
-	// Get API key - prefer user-provided, fall back to environment
-	const apiKey = body.apiKey || env.OLLAMA_TOKEN || env.HF_TOKEN || ''; // Ollama usually doesn't need a token
-	const model = body.model || env.OLLAMA_MODEL || env.HF_MODEL || 'llama3.2';
-	const AI_BASE_URL = env.OLLAMA_BASE_URL || env.HF_BASE_URL || 'http://localhost:11434/v1';
-
-	// Validate API key only if using an external provider like Hugging Face
-	if (!apiKey && AI_BASE_URL.includes('huggingface.co')) {
-		console.error('[AI] No API key provided for Hugging Face');
-		return new Response(
-			JSON.stringify({
-				error: 'No API key configured. Please add your API key in Settings.'
-			}),
-			{
-				status: 401,
-				headers: { 'Content-Type': 'application/json' }
-			}
-		);
-	}
+	const model = body.model || 'llama3.2';
+	const OLLAMA_BASE_URL = 'http://localhost:11434/v1';
 
 	if (!body.message || typeof body.message !== 'string') {
 		return new Response(
@@ -75,17 +57,15 @@ export const POST: RequestHandler = async ({ request }) => {
 	];
 
 	try {
-		// 3) Call AI Inference Provider
-		const routerUrl = `${AI_BASE_URL}/chat/completions`;
+		// 3) Call Ollama's OpenAI-compatible endpoint
+		const routerUrl = `${OLLAMA_BASE_URL}/chat/completions`;
 
-		console.log('[AI Server] Calling:', routerUrl);
-		console.log('[AI Server] Model:', model);
-		if (apiKey) console.log('[AI Server] API Key prefix:', apiKey.substring(0, 5) + '...');
+		console.log('[Ollama Server] Calling:', routerUrl);
+		console.log('[Ollama Server] Model:', model);
 
 		const aiResponse = await fetch(routerUrl, {
 			method: 'POST',
 			headers: {
-				...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
@@ -108,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		// 4) Non-OK status → surface error
 		if (!aiResponse.ok) {
 			console.error(
-				'[AI Server Router] error',
+				'[Ollama Server] error',
 				aiResponse.status,
 				aiResponse.statusText,
 				'payload:',
@@ -120,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					data !== null &&
 					(data.error?.message || data.error)) ||
 				rawText ||
-				'AI Router request failed';
+				'Ollama request failed';
 
 			return new Response(
 				JSON.stringify({
@@ -154,10 +134,16 @@ export const POST: RequestHandler = async ({ request }) => {
 			headers: { 'Content-Type': 'application/json' }
 		});
 	} catch (err) {
-		console.error('[HF Router] network/unknown error:', err);
+		console.error('[Ollama Server] network/unknown error:', err);
+
+		const isConnectionError = String(err).includes('ECONNREFUSED') || String(err).includes('fetch failed');
+		const errorMsg = isConnectionError
+			? 'Cannot connect to Ollama. Make sure Ollama is running (ollama serve) on http://localhost:11434'
+			: 'Failed to contact Ollama server';
+
 		return new Response(
 			JSON.stringify({
-				error: 'Failed to contact Hugging Face Router',
+				error: errorMsg,
 				details: String(err)
 			}),
 			{

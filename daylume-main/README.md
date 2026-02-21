@@ -90,10 +90,10 @@
 
 ### 🤖 **AI Assistant**
 
-- Integrated AI chat powered by Ollama out-of-the-box (local, private, and free)
+- Integrated 100% local, private, and free AI chat powered by Ollama out-of-the-box
 - Context-aware productivity assistance
 - Get suggestions for tasks, habits, and goals
-- Extendable to Hugging Face, OpenAI, and OpenRouter APIs
+- Zero API keys required and no data leaves your device
 
 ### 📊 **Weekly Review**
 
@@ -116,12 +116,26 @@
 
 ### 📱 **Progressive Web App**
 
-- Install on any device (iOS, Android, Desktop)
-- Custom install prompts for seamless onboarding
 - Offline-first architecture with dedicated fallback page
-- Push notifications
-- App-like experience
-- Quick capture shortcuts
+- App-like experience with quick capture shortcuts
+
+#### Desktop (Chrome / Edge)
+
+1. Open Daylume in your browser.
+2. Click the install icon (a screen with a down arrow) in the right side of the URL bar.
+3. Daylume will now run as a native desktop app.
+
+#### iOS (Safari)
+
+1. Open Daylume in Safari.
+2. Tap the **Share** button at the bottom.
+3. Scroll down and tap **Add to Home Screen**.
+
+#### Android (Chrome)
+
+1. Open Daylume in Chrome.
+2. Tap the three-dot menu (⋮) in the top right.
+3. Tap **Add to Home screen** or **Install app**.
 
 ### 🔐 **Privacy & Security**
 
@@ -186,28 +200,31 @@
    npm install
    ```
 
-3. **Set up environment variables**
+3. **Set up Local AI (Ollama)**
 
-   Create a `.env.local` file in the root directory:
+   Daylume uses Ollama for local, private AI features without API keys.
+   - Install [Ollama](https://ollama.com)
+   - Pull a model: `ollama pull llama3.2`
+   - Start the server: `ollama serve`
+
+   Daylume connects seamlessly to `http://localhost:11434`.
+
+4. **Environment variables (Optional)**
+
+   If you are using Supabase for cloud sync, create a `.env.local` file:
 
    ```env
-   # Supabase (Optional - for cloud sync)
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-   # AI Configuration (Defaults to local Ollama if missing)
-   # OLLAMA_TOKEN="" # Ollama usually doesn't need auth
-   # OLLAMA_MODEL="llama3.2"
-   # OLLAMA_BASE_URL="http://localhost:11434/v1"
    ```
 
-4. **Start the development server**
+5. **Start the development server**
 
    ```bash
    npm run dev
    ```
 
-5. **Open your browser**
+6. **Open your browser**
 
    Navigate to [http://localhost:5173](http://localhost:5173)
 
@@ -240,10 +257,9 @@ Daylume is configured for seamless deployment on Cloudflare Pages with serverles
    | Build command | `npm run build` |
    | Build output directory | `.svelte-kit/cloudflare` |
 
-3. **Add environment variables** in Cloudflare Dashboard:
-   - `OLLAMA_TOKEN` - API token (optional)
-   - `OLLAMA_MODEL` - AI model identifier (e.g. `llama3.2`)
-   - `OLLAMA_BASE_URL` - AI API base URL (e.g. `http://localhost:11434/v1`)
+3. **Add environment variables** (Optional) in Cloudflare Dashboard:
+   - Supabase connection variables if you're using cloud sync.
+   *(Note: Daylume's AI functionality relies on the user's local Ollama server `http://localhost:11434`, so no server-side AI keys are needed!)*
 
 4. **Deploy!** 🚀
 
