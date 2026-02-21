@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+build/
+.svelte-kit/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local development
+.vercel
+.netlify
+
+# PWA generated files
+dev-dist/
+
+# Ignore vscode AI rules
+.github/instructions/

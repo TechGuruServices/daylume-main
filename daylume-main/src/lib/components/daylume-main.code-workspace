@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../.."
+		}
+	],
+	"extensions": {
+		"recommendations": [
+			"svelte.svelte-vscode",
+			"christian-kohler.npm-intellisense"
+		]
+	}
+}
