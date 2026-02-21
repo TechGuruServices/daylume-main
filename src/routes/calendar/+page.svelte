@@ -13,7 +13,7 @@
 	let view: "month" | "week" | "day" = "month";
 	let showEventModal = false;
 	let editingEvent: CalendarEvent | null = null;
-	
+
 	// Loading states
 	let isLoading = true;
 
@@ -266,6 +266,7 @@
 			<div class="flex items-center gap-4">
 				<button
 					on:click={previousMonth}
+					aria-label="Previous month"
 					class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
 				>
 					<span class="mdi mdi-chevron-left text-2xl"></span>
@@ -278,6 +279,7 @@
 				</h3>
 				<button
 					on:click={nextMonth}
+					aria-label="Next month"
 					class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
 				>
 					<span class="mdi mdi-chevron-right text-2xl"></span>
@@ -309,7 +311,7 @@
 					class="min-h-[120px] p-2 rounded-2xl border transition-all duration-200 group
 					{day
 						? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 cursor-pointer'
-						: 'border-transparent'} 
+						: 'border-transparent'}
 					{isToday(day)
 						? 'ring-1 ring-primary shadow-[0_0_15px_rgba(139,92,246,0.2)]'
 						: ''}

@@ -17,6 +17,15 @@ const config = {
         },
         alias: {
             $lib: './src/lib'
+        },
+        prerender: {
+            handleHttpError: ({ status, path }) => {
+                // Ignore 404 errors for favicon and manifest files - these are optional
+                if (status === 404 && (path.includes('/favicon') || path.includes('/manifest'))) {
+                    return;
+                }
+                throw new Error(`${status} ${path}`);
+            }
         }
     }
 };

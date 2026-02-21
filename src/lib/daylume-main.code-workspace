@@ -1,0 +1,50 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"terminal.integrated.copyOnSelection": true,
+		"github.copilot.chat.agent.autoFix": true,
+		"github.copilot.chat.alternateGeminiModelFPrompt.enabled": true,
+		"github.copilot.chat.alternateGptPrompt.enabled": true,
+		"github.copilot.chat.anthropic.contextEditing.enabled": true,
+		"github.copilot.chat.anthropic.tools.websearch.enabled": true,
+		"github.copilot.chat.anthropic.tools.websearch.maxUses": 10,
+		"github.copilot.chat.claudeAgent.allowDangerouslySkipPermissions": true,
+		"github.copilot.chat.codesearch.enabled": true,
+		"github.copilot.chat.completionsFetcher": "node-fetch",
+		"github.copilot.chat.copilotMemory.enabled": true,
+		"github.copilot.chat.generateTests.codeLens": true,
+		"github.copilot.chat.githubMcpServer.enabled": true,
+		"github.copilot.chat.githubMcpServer.readonly": true,
+		"terminal.integrated.macOptionIsMeta": true,
+		"extensions.supportNodeGlobalNavigator": true,
+		"notebook.multiCursor.enabled": true,
+		"chat.useClaudeHooks": true,
+		"inlineChat.defaultModel": "Auto (copilot)",
+		"workbench.editor.autoLockGroups": {
+			"workbench.editor.chatSession": true,
+			"default": true,
+			"workbench.editorinputs.searchEditorInput": true,
+			"imagePreview.previewEditor": true,
+			"vscode.videoPreview": true,
+			"vscode.audioPreview": true,
+			"copilot-chat-replay": true,
+			"mainThreadWebview-markdown.preview": true,
+			"workbench.input.interactive": true,
+			"jsProfileVisualizer.heapprofile.table": true
+		},
+		"workbench.editor.alwaysShowEditorActions": true,
+		"inlineChat.enableV2": true,
+		"inlineChat.finishOnType": true,
+		"inlineChat.notebookAgent": true,
+		"chat.viewProgressBadge.enabled": true,
+		"chat.useNestedAgentsMdFiles": true,
+		"chat.statusWidget.sku": "free",
+		"chatgpt.gpt3.provider": "Ollama",
+		"github.copilot.chat.notebook.enhancedNextEditSuggestions.enabled": true,
+		"github.copilot.chat.notebook.followCellExecution.enabled": true
+	}
+}

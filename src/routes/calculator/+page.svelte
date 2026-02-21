@@ -226,12 +226,14 @@
                     <!-- Row 1 -->
                     <button
                         on:click={handleClear}
+                        aria-label="Clear calculator"
                         class="btn bg-danger/20 text-danger hover:bg-danger hover:text-white col-span-2 text-xl py-5 rounded-2xl border border-danger/20 transition-all"
                     >
                         C
                     </button>
                     <button
                         on:click={handleBackspace}
+                        aria-label="Delete last digit"
                         class="btn btn-secondary text-xl py-5 rounded-2xl"
                     >
                         <span class="mdi mdi-backspace-outline"></span>

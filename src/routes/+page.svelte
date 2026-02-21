@@ -24,9 +24,6 @@
 	} from "$lib/storage";
 	import { showToast } from "$lib/toast";
 
-	// Export props that SvelteKit passes to page
-	export let data: any = undefined;
-	export let params: any = undefined;
 	import { hapticFeedback } from "$lib/haptics";
 	import {
 		DashboardSkeleton,
@@ -803,6 +800,7 @@
 <!-- Floating Quick Capture Button (Mobile) -->
 <button
 	on:click={() => { showQuickCapture = true; hapticFeedback.tap(); }}
+	aria-label="Quick capture new thought"
 	class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-primary to-secondary shadow-lg shadow-primary/30 flex items-center justify-center text-white z-50 active:scale-95 transition-transform md:hidden safe-bottom"
 >
 	<span class="mdi mdi-plus text-2xl"></span>

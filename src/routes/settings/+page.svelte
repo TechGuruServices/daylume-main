@@ -675,9 +675,11 @@
             <!-- Image Gallery -->
             <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {#each customBackground.images as image, index}
-                    <button
-                        type="button"
+                    <div
+                        role="button"
+                        tabindex="0"
                         on:click={() => selectImage(index)}
+                        on:keydown={(e) => e.key === 'Enter' && selectImage(index)}
                         class="relative group aspect-video rounded-xl overflow-hidden cursor-pointer border-2 transition-all {customBackground.currentIndex ===
                         index
                             ? 'border-primary ring-2 ring-primary/30'
@@ -718,7 +720,7 @@
                                 >
                             </div>
                         {/if}
-                    </button>
+                    </div>
                 {/each}
             </div>
 

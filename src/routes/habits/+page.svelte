@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import type { Habit, HabitFrequency, HabitLog } from "$lib/types";
-	import { 
-		getHabits, 
-		addHabit, 
-		updateHabit, 
+	import {
+		getHabits,
+		addHabit,
+		updateHabit,
 		deleteHabit,
 		getHabitLogs,
 		getOrCreateHabitLog,
@@ -21,7 +21,7 @@
 	let showHabitModal = false;
 	let editingHabit: Habit | null = null;
 	let selectedDate = new Date().toISOString().split("T")[0];
-	
+
 	// Loading states
 	let isLoading = true;
 
@@ -185,7 +185,7 @@
 	function nextDay() {
 		const today = new Date().toISOString().split("T")[0];
 		if (selectedDate >= today) return;
-		
+
 		const date = new Date(selectedDate);
 		date.setDate(date.getDate() + 1);
 		selectedDate = date.toISOString().split("T")[0];
@@ -200,11 +200,11 @@
 	function formatSelectedDate(): string {
 		const today = new Date().toISOString().split("T")[0];
 		if (selectedDate === today) return "Today";
-		
+
 		const yesterday = new Date();
 		yesterday.setDate(yesterday.getDate() - 1);
 		if (selectedDate === yesterday.toISOString().split("T")[0]) return "Yesterday";
-		
+
 		return new Date(selectedDate).toLocaleDateString("en-US", {
 			weekday: "short",
 			month: "short",
@@ -216,25 +216,25 @@
 	function getLast7Days(): { date: string; completed: number; total: number }[] {
 		const days: { date: string; completed: number; total: number }[] = [];
 		const allLogs = getHabitLogs();
-		
+
 		for (let i = 6; i >= 0; i--) {
 			const date = new Date();
 			date.setDate(date.getDate() - i);
 			const dateStr = date.toISOString().split("T")[0];
-			
+
 			const dayLogs = allLogs.filter(l => l.date === dateStr);
 			let completed = 0;
-			
+
 			habits.forEach(habit => {
 				const log = dayLogs.find(l => l.habitId === habit.id);
 				if (log && log.count >= habit.targetCount) {
 					completed++;
 				}
 			});
-			
+
 			days.push({ date: dateStr, completed, total: habits.length });
 		}
-		
+
 		return days;
 	}
 
@@ -323,7 +323,7 @@
 						{new Date(day.date).getDate()}
 					</span>
 					<div class="w-6 h-1 rounded-full mt-2 bg-white/10 overflow-hidden">
-						<div 
+						<div
 							class="h-full bg-gradient-to-r from-primary to-secondary transition-all"
 							style="width: {completionPercent}%"
 						></div>
@@ -337,6 +337,7 @@
 	<div class="flex items-center justify-between px-2">
 		<button
 			on:click={previousDay}
+			aria-label="Previous day"
 			class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
 		>
 			<span class="mdi mdi-chevron-left text-2xl"></span>
@@ -352,6 +353,7 @@
 		<button
 			on:click={nextDay}
 			disabled={isToday}
+			aria-label="Next day"
 			class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
 		>
 			<span class="mdi mdi-chevron-right text-2xl"></span>
@@ -368,8 +370,8 @@
 			{@const count = getHabitCount(habit.id)}
 			{@const completed = isCompleted(habit)}
 			{@const streak = getHabitStreak(habit.id)}
-			
-			<div 
+
+			<div
 				class="glass-card-static p-5 md:p-6 {completed ? 'ring-1 ring-success/30 bg-success/5' : ''}"
 				style="--habit-color: {habit.color}"
 			>
@@ -392,7 +394,7 @@
 									<p class="text-sm text-gray-400 mt-0.5">{habit.description}</p>
 								{/if}
 							</div>
-							
+
 							<!-- Streak Badge -->
 							{#if streak > 0}
 								<div class="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-medium flex-shrink-0">
@@ -404,7 +406,7 @@
 
 						<!-- Progress Bar -->
 						<div class="relative h-3 bg-white/10 rounded-full overflow-hidden mb-3">
-							<div 
+							<div
 								class="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
 								style="width: {progress}%; background: linear-gradient(90deg, {habit.color}, {habit.color}cc)"
 							></div>
@@ -423,6 +425,7 @@
 								<button
 									on:click={() => decrementHabit(habit.id)}
 									disabled={count === 0}
+									aria-label="Decrease habit count"
 									class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
 								>
 									<span class="mdi mdi-minus"></span>
@@ -430,6 +433,7 @@
 								<button
 									on:click={() => incrementHabit(habit.id)}
 									disabled={completed}
+									aria-label="Increase habit count"
 									class="w-9 h-9 rounded-lg flex items-center justify-center transition-all disabled:opacity-50"
 									style="background: linear-gradient(135deg, {habit.color}, {habit.color}cc)"
 								>
@@ -514,8 +518,8 @@
 					<button
 						type="button"
 						on:click={() => habitForm.icon = icon}
-						class="w-10 h-10 rounded-xl border transition-all flex items-center justify-center text-xl {habitForm.icon === icon 
-							? 'bg-white/10 border-white/20 ring-2 ring-primary/50' 
+						class="w-10 h-10 rounded-xl border transition-all flex items-center justify-center text-xl {habitForm.icon === icon
+							? 'bg-white/10 border-white/20 ring-2 ring-primary/50'
 							: 'bg-white/5 border-white/5 hover:bg-white/10'}"
 					>
 						{icon}
@@ -531,8 +535,8 @@
 					<button
 						type="button"
 						on:click={() => habitForm.color = color}
-						class="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center {habitForm.color === color 
-							? 'ring-2 ring-white/50 scale-110' 
+						class="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center {habitForm.color === color
+							? 'ring-2 ring-white/50 scale-110'
 							: 'border-transparent hover:scale-105'}"
 						style="background: {color}"
 					>
