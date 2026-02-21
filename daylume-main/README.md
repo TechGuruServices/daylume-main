@@ -90,10 +90,10 @@
 
 ### 🤖 **AI Assistant**
 
-- Integrated AI chat powered by Hugging Face
+- Integrated AI chat powered by Ollama out-of-the-box (local, private, and free)
 - Context-aware productivity assistance
 - Get suggestions for tasks, habits, and goals
-- Natural language processing
+- Extendable to Hugging Face, OpenAI, and OpenRouter APIs
 
 ### 📊 **Weekly Review**
 
@@ -156,7 +156,7 @@
 | **Language** | [TypeScript](https://www.typescriptlang.org/) |
 | **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
 | **Database** | [Supabase](https://supabase.com/) (optional cloud sync) |
-| **AI** | [Hugging Face Inference API](https://huggingface.co/) |
+| **AI** | [Ollama](https://ollama.com/) (Default local models) |
 | **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/) |
 | **PWA** | [Vite PWA Plugin](https://vite-pwa-org.netlify.app/) |
 | **Icons** | Custom glassmorphic icons |
@@ -195,10 +195,10 @@
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-   # Hugging Face AI (Required for AI chat)
-   HF_TOKEN=your_hugging_face_token
-   HF_MODEL=openai/gpt-oss-120b:fastest
-   HF_BASE_URL=https://router.huggingface.co/v1
+   # AI Configuration (Defaults to local Ollama if missing)
+   # OLLAMA_TOKEN="" # Ollama usually doesn't need auth
+   # OLLAMA_MODEL="llama3.2"
+   # OLLAMA_BASE_URL="http://localhost:11434/v1"
    ```
 
 4. **Start the development server**
@@ -241,9 +241,9 @@ Daylume is configured for seamless deployment on Cloudflare Pages with serverles
    | Build output directory | `.svelte-kit/cloudflare` |
 
 3. **Add environment variables** in Cloudflare Dashboard:
-   - `HF_TOKEN` - Your Hugging Face API token
-   - `HF_MODEL` - AI model identifier
-   - `HF_BASE_URL` - Hugging Face API base URL
+   - `OLLAMA_TOKEN` - API token (optional)
+   - `OLLAMA_MODEL` - AI model identifier (e.g. `llama3.2`)
+   - `OLLAMA_BASE_URL` - AI API base URL (e.g. `http://localhost:11434/v1`)
 
 4. **Deploy!** 🚀
 
@@ -353,7 +353,7 @@ This project is proprietary software. All rights reserved.
 - [SvelteKit](https://kit.svelte.dev/) - The framework that makes development a joy
 - [Tailwind CSS](https://tailwindcss.com/) - For beautiful, responsive styling
 - [Supabase](https://supabase.com/) - Backend as a service
-- [Hugging Face](https://huggingface.co/) - AI model hosting
+- [Ollama](https://ollama.com/) - Local AI model hosting
 - [Cloudflare](https://cloudflare.com/) - Edge deployment platform
 
 ---

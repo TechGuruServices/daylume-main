@@ -31,16 +31,16 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Get API key - prefer user-provided, fall back to environment
-	const apiKey = body.apiKey || env.HF_TOKEN;
-	const model = body.model || env.HF_MODEL || 'mistralai/Mistral-7B-Instruct-v0.3';
-	const HF_BASE_URL = env.HF_BASE_URL || 'https://router.huggingface.co/v1';
+	const apiKey = body.apiKey || env.OLLAMA_TOKEN || env.HF_TOKEN || ''; // Ollama usually doesn't need a token
+	const model = body.model || env.OLLAMA_MODEL || env.HF_MODEL || 'llama3.2';
+	const AI_BASE_URL = env.OLLAMA_BASE_URL || env.HF_BASE_URL || 'http://localhost:11434/v1';
 
-	// Validate API key
-	if (!apiKey) {
-		console.error('[HF] No API key provided');
+	// Validate API key only if using an external provider like Hugging Face
+	if (!apiKey && AI_BASE_URL.includes('huggingface.co')) {
+		console.error('[AI] No API key provided for Hugging Face');
 		return new Response(
 			JSON.stringify({
-				error: 'No API key configured. Please add your HuggingFace API key in Settings.'
+				error: 'No API key configured. Please add your API key in Settings.'
 			}),
 			{
 				status: 401,
@@ -75,28 +75,29 @@ export const POST: RequestHandler = async ({ request }) => {
 	];
 
 	try {
-		// 3) Call Hugging Face Inference Providers (Router)
-		const routerUrl = `${HF_BASE_URL}/chat/completions`;
-		
-		console.log('[HF] Calling:', routerUrl);
-		console.log('[HF] Model:', model);
-		console.log('[HF] API Key prefix:', apiKey.substring(0, 10) + '...');
+		// 3) Call AI Inference Provider
+		const routerUrl = `${AI_BASE_URL}/chat/completions`;
 
-		const hfResponse = await fetch(routerUrl, {
+		console.log('[AI Server] Calling:', routerUrl);
+		console.log('[AI Server] Model:', model);
+		if (apiKey) console.log('[AI Server] API Key prefix:', apiKey.substring(0, 5) + '...');
+
+		const aiResponse = await fetch(routerUrl, {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${apiKey}`,
+				...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
 				model: model,
 				messages: messagesPayload,
+				stream: false,
 				max_tokens: 1024,
 				temperature: 0.7
 			})
 		});
 
-		const rawText = await hfResponse.text();
+		const rawText = await aiResponse.text();
 		let data: any;
 		try {
 			data = JSON.parse(rawText);
@@ -104,12 +105,12 @@ export const POST: RequestHandler = async ({ request }) => {
 			data = rawText;
 		}
 
-		// 4) Non-OK status → surface HF error
-		if (!hfResponse.ok) {
+		// 4) Non-OK status → surface error
+		if (!aiResponse.ok) {
 			console.error(
-				'[HF Router] error',
-				hfResponse.status,
-				hfResponse.statusText,
+				'[AI Server Router] error',
+				aiResponse.status,
+				aiResponse.statusText,
 				'payload:',
 				data
 			);
@@ -119,12 +120,12 @@ export const POST: RequestHandler = async ({ request }) => {
 					data !== null &&
 					(data.error?.message || data.error)) ||
 				rawText ||
-				'Hugging Face Router request failed';
+				'AI Router request failed';
 
 			return new Response(
 				JSON.stringify({
 					error: typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage),
-					status: hfResponse.status
+					status: aiResponse.status
 				}),
 				{
 					status: 502,

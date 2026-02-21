@@ -4,6 +4,6 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 
 # Environment variables for production
 # Add these in Cloudflare Dashboard > Pages > Settings > Environment variables
-# HF_TOKEN = "your-hugging-face-token"
-# HF_MODEL = "openai/gpt-oss-120b:fastest"
-# HF_BASE_URL = "https://router.huggingface.co/v1"
+# OLLAMA_TOKEN = "" # Ollama doesn't usually require auth
+# OLLAMA_MODEL = "llama3.2"
+# OLLAMA_BASE_URL = "http://localhost:11434/v1"
