@@ -24,9 +24,6 @@
 	} from "$lib/storage";
 	import { showToast } from "$lib/toast";
 
-	// Export props that SvelteKit passes to page
-	export let data: any = undefined;
-	export let params: any = undefined;
 	import { hapticFeedback } from "$lib/haptics";
 	import {
 		DashboardSkeleton,

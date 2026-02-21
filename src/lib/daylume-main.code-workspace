@@ -1,0 +1,31 @@
+{
+	"settings": {
+		"mcp": {
+			"servers": {
+				"io.github.contextstreamio/mcp-server": {
+					"type": "stdio",
+					"command": "npx",
+					"args": [
+						"@contextstream/mcp-server@0.3.63"
+					],
+					"gallery": "https://api.mcp.github.com",
+					"version": "0.3.63"
+				}
+			},
+			"inputs": []
+		},
+		"chat.mcp.serverSampling": {
+			"daylume-main.code-workspace: io.github.contextstreamio/mcp-server": {
+				"allowedModels": [
+					"copilot/auto",
+					"copilot/claude-haiku-4.5",
+					"copilot/gpt-4.1",
+					"copilot/gpt-4o",
+					"copilot/gpt-5-mini",
+					"ollama/Ollama/0",
+					"copilot/oswe-vscode-prime"
+				]
+			}
+		}
+	}
+}

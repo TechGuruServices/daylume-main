@@ -12,9 +12,6 @@
 
 	import { initTheme } from "$lib/theme";
 
-	// Export props that SvelteKit passes to layout
-	export let data: any = undefined;
-	export let params: any = undefined;
 	import { userStore } from "$lib/user";
 	import { searchAll, type SearchResult } from "$lib/search";
 	import {
