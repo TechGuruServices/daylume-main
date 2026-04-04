@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'DM Sans', sans-serif;
+    --font-display: 'Outfit', sans-serif;
+
+    /* Base theme: Premium Light (Off-white canvas) */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    
+    /* Primary: Electric Teal */
+    --primary: 173 80% 40%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Clean Gray for subtle actions */
+    --secondary: 210 20% 92%;
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 210 20% 92%;
+    --muted-foreground: 215 16% 47%;
+    
+    /* Accent: A vibrant sky blue gradient stop */
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 173 80% 40%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Sidebar specific — both long and short aliases needed by Tailwind config */
+    --sidebar: 0 0% 99%;
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 173 80% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 95%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 173 80% 40%;
+
+    --radius: 1rem;
+
+    --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.02);
+    --shadow: 0 4px 8px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+    --shadow-md: 0 12px 24px -4px rgb(0 0 0 / 0.06), 0 4px 8px -4px rgb(0 0 0 / 0.03);
+    --shadow-lg: 0 24px 48px -12px rgb(0 0 0 / 0.08), 0 12px 16px -8px rgb(0 0 0 / 0.04);
+  }
+
+  .dark {
+    /* Base theme: Deep sleek Charcoal / OLED Black */
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    
+    /* Primary: Electric Teal Glow */
+    --primary: 173 80% 45%;
+    --primary-foreground: 240 10% 4%;
+    
+    --secondary: 240 6% 12%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 5% 65%;
+    
+    --accent: 199 89% 55%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Ultra-thin low-opacity borders */
+    --border: 240 6% 15%;
+    --input: 240 6% 15%;
+    --ring: 173 80% 45%;
+
+    --card: 240 8% 6%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 8% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --sidebar: 240 8% 5%;
+    --sidebar-background: 240 8% 5%;
+    --sidebar-foreground: 240 5% 75%;
+    --sidebar-primary: 173 80% 45%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 6% 12%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 6% 12%;
+    --sidebar-ring: 173 80% 45%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight text-foreground;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-background/60 backdrop-blur-2xl border border-white/5 shadow-2xl shadow-black/20;
+  }
+  
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-white/5 shadow-xl shadow-black/10;
+  }
+
+  .hover-elevate {
+    @apply transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30;
+  }
+  
+  .active-elevate-2 {
+    @apply active:translate-y-0 active:shadow-sm transition-all duration-150;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+
+  .animate-gradient {
+    background-size: 200% auto;
+    animation: gradient-shift 4s ease-in-out infinite;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}

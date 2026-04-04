@@ -1,0 +1,64 @@
+# config/agents/global-rules.yaml
+version: "1.0"
+enforcement: strict
+
+security:
+  no_direct_db_writes: true
+  require_orm_layer: "drizzle"
+  api_call_timeout_ms: 10000
+  circuit_breaker_threshold: 5
+  sanitize_llm_inputs: true
+  block_sensitive_env_exposure:
+    - DATABASE_URL
+    - TELEGRAM_BOT_TOKEN
+    - OLLAMA_API_KEY
+
+reliability:
+  idempotency_required_for:
+    - db_write
+    - telegram_send
+  max_retries: 3
+  retry_backoff_base_ms: 500
+  fallback_on_noncritical_failure: true
+  health_check_path: "/health"
+
+observability:
+  log_fields:
+    - agent_id
+    - tool_name
+    - input_hash_sha256
+    - duration_ms
+    - status
+  exclude_pii: true
+  trace_header: "X-Request-ID"
+  metrics_prefix: "craigscatch.agent"
+
+agent_behavior:
+  context:
+    max_tokens: 4096
+    ttl_seconds: 1800
+    strip_pii: true
+  tools:
+    allowed:
+      - rss_fetch
+      - db_query_read
+      - db_write_validated
+      - telegram_send
+    require_confirmation:
+      - db_write_validated
+      - external_post
+    rate_limit:
+      requests_per_minute: 30
+      burst: 5
+  reasoning:
+    require_citation: true
+    confidence_threshold: 0.7
+    fallback_intent: "ask_clarification"
+
+forbidden_patterns:
+  - "eval\\(|Function\\("
+  - "unbounded_recursion"
+  - "filesystem_write_outside_tmp"
+  - "expose_internal_urls_to_client"
+  - "hardcoded_credentials"
+  - "ignore_robots_txt"

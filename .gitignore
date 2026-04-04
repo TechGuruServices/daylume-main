@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables (contains secrets) - DO NOT commit real .env
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Replit
+.replit
+.local/
+.cache/
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Misc
+.agents/

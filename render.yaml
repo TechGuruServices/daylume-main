@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: craigslist-item-scanner
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: NODE_ENV=production node dist/index.cjs
+    envVars:
+      # Database
+      - key: DATABASE_URL
+        sync: false
+
+      # Server
+      - key: PORT
+        value: 5000
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NODE_ENV
+        value: production
+
+      # Ollama AI (set to your hosted Ollama URL if available, or leave blank)
+      - key: OLLAMA_API_URL
+        sync: false
+      - key: MODEL_NAME
+        sync: false
+      # Legacy fallback (kept for compatibility)
+      - key: OLLAMA_MODEL
+        sync: false
+
+      # Scraper schedule (must match .env for consistency)
+      - key: CHECK_INTERVAL_MINUTES
+        value: "10"
+
+      # Telegram alerts — must be manually set in Render Dashboard > Environment
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+
+      # Groq AI
+      - key: GROQ_API_KEY
+        sync: false
+
+# ⚠️ IMPORTANT: Render Starter plan spins down after ~15 min of inactivity.
+# To keep the scheduler alive, set up a free uptime monitor (e.g., UptimeRobot)
+# to ping your /health endpoint every 10 minutes:
+#   https://YOUR-APP.onrender.com/health
