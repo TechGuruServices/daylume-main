@@ -26,8 +26,13 @@ export function Layout({ children }: LayoutProps) {
             </div>
           </header>
           <main className="flex-1 overflow-auto bg-transparent p-6 md:p-10 relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none -z-10" />
-            <div className="max-w-7xl mx-auto h-full">
+            <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-20" />
+            
+            {/* Ambient animated glowing orbs */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse duration-[10000ms]" />
+            <div className="absolute bottom-0 right-1/4 w-[30rem] h-[30rem] bg-accent/10 rounded-full blur-[150px] pointer-events-none -z-10" />
+            
+            <div className="max-w-7xl mx-auto h-full relative z-0">
               {children}
             </div>
           </main>
