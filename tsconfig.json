@@ -28,7 +28,7 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "types": [
       "node",
       "vite/client"

@@ -1,21 +1,20 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertMonitorSchema } from "@shared/schema";
-import { type MonitorInput } from "@shared/routes";
-import { useCreateMonitor, useUpdateMonitor } from "@/hooks/use-monitors";
 import { Button } from "@/components/ui/button";
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { useCreateMonitor, useUpdateMonitor } from "@/hooks/use-monitors";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type MonitorInput } from "@shared/routes";
+import { insertMonitorSchema } from "@shared/schema";
+import { useForm } from "react-hook-form";
 
 interface MonitorFormProps {
   initialData?: MonitorInput & { id?: number };
@@ -58,12 +57,12 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Monitor Name</FormLabel>
+              <FormLabel className="text-gradient-sapphire font-semibold">Monitor Name</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="e.g. SF Bay Area Free Stuff" 
-                  className="bg-background focus-visible:ring-primary/20 focus-visible:border-primary"
-                  {...field} 
+                <Input
+                  placeholder="e.g. SF Bay Area Free Stuff"
+                  className="glass-card-subtle focus-visible:ring-primary/20 focus-visible:border-primary hover-lift transition-all"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -76,16 +75,16 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
           name="url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Craigslist RSS URL</FormLabel>
+              <FormLabel className="text-gradient-sapphire font-semibold">Craigslist RSS URL</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="https://sfbay.craigslist.org/search/zip?format=rss" 
-                  className="bg-background focus-visible:ring-primary/20 focus-visible:border-primary"
-                  {...field} 
+                <Input
+                  placeholder="https://sfbay.craigslist.org/search/zip?format=rss"
+                  className="glass-card-subtle focus-visible:ring-primary/20 focus-visible:border-primary hover-lift transition-all"
+                  {...field}
                 />
               </FormControl>
               <FormDescription className="text-xs mt-1 text-muted-foreground/80">
-                Go to Craigslist, do a search, and append <code className="bg-muted px-1 rounded text-foreground">?format=rss</code> to the URL.
+                Go to Craigslist, do a search, and append <code className="glass-card-subtle px-1 rounded text-foreground">?format=rss</code> to the URL.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -96,9 +95,9 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
           control={form.control}
           name="active"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border/50 p-4 bg-muted/10">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border/50 p-4 glass-card-subtle hover-lift transition-all">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Active Status</FormLabel>
+                <FormLabel className="text-base text-gradient-sapphire font-semibold">Active Status</FormLabel>
                 <FormDescription>
                   When disabled, this monitor will be skipped during checks.
                 </FormDescription>
@@ -115,13 +114,13 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
         />
 
         <div className="flex justify-end gap-3 pt-4 border-t border-border/50 mt-6">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isPending}>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isPending} className="glass-card-subtle hover-lift active-press">
             Cancel
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isPending}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20"
+            className="glass-card-premium text-primary-foreground shadow-lg shadow-primary/20 hover-lift active-press animate-gradient-flow"
           >
             {isPending ? "Saving..." : isEditing ? "Save Changes" : "Add Monitor"}
           </Button>
