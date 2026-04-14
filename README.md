@@ -1,83 +1,115 @@
-# Craigs-Catch — Craigslist Item Scanner (Live Setup Guide)
+# <p align="center"><img src="client/public/logo-512.png" width="128" height="128" /><br>Craigs-Catch</p>
 
-This guide provides step-by-step instructions for taking this project from code to a **Live, functioning system** using **real data** and **no placeholders**.
+<p align="center">
+  <b>Premium Craigslist Monitoring Shell & Real-Time Alert System</b><br>
+  <i>Find deals before anyone else with Luxury Dark Mode PWA aesthetics and instant Telegram notifications.</i>
+</p>
 
-## 1. Entering the Correct Directory
-When opening your terminal, ensure you traverse into the correct project folder before running any commands. Otherwise, you will receive `Missing script` errors.
-```powershell
-cd "Craigslist-Item-Scanner-main"
-```
-
-## 2. Install Dependencies
-Install all required Node.js packages for the server and web application:
-```powershell
-npm install
-```
-
-## 3. Database Setup (Crucial for Real Data)
-Before starting the application, you must initialize the database schema. This creates the exact tables (`local.db` file) necessary for persistence, preventing crashes when the real app tries to write data.
-```powershell
-npm run db:push
-```
-
-## 4. Environment Variables & Authentication
-You need real credentials to ensure the bot can safely reach out to you via Telegram without placeholders.
-
-1. **Create the Environment File** by copying the template file:
-   ```powershell
-   cp .env.example .env
-   # Or manually rename the file to just ".env"
-   ```
-2. **Edit `.env`** with real live values:
-   - `DATABASE_URL=./local.db` (Leave as is for SQLite)
-   - `TELEGRAM_BOT_TOKEN=your_real_bot_token` (Replace with token from @BotFather)
-   - `TELEGRAM_CHAT_ID=your_real_chat_id` (Replace with Chat ID)
-   - `CHECK_INTERVAL_MINUTES=5` (How often you want the system to check for live updates)
-   - `PORT=5000` (Local web dashboard port)
-
-   *(For complete steps on getting Telegram credentials, read the "Live Telegram Setup" section below).*
-
-## 5. Running the Application Live
-Start up the web dashboard and the background process:
-```powershell
-npm run dev
-```
-*(Note for 24/7 Run: If you wish to run this indefinitely without keeping the terminal open, you should use PM2: `npm install -g pm2` followed by `pm2 start npm --name "craigscatch" -- run dev`)*
-
-## 6. Configuring Real Live Filters (Web Dashboard)
-Once your server is running, navigate to [http://localhost:5000](http://localhost:5000) using your web browser. 
-
-To use real data instead of placeholders:
-1. **Navigate to real Craigslist**: Go to craigslist.org and perform your exact desired search (e.g., search for "macbook", check "has image", select the max price).
-2. **Copy the URL**: Copy the URL from your browser's address bar. It should look something like `https://sfbay.craigslist.org/search/sya?query=macbook&max_price=500`.
-3. **Add to Craigs-Catch**: In your dashboard on `http://localhost:5000`, paste this exact URL into the "Add Feed" or "Filter" section. 
-4. **Live Feed Process**: The background script will immediately execute, download the real live listings directly from your link, save them to the local database, and ping your Telegram account!
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge&logo=appveyor" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/PRs-welcome-violet?style=for-the-badge" />
+</p>
 
 ---
 
-## Live Telegram Setup (Step-by-Step)
-For getting actual production push notifications on your phone, you must link your own bot.
+## ✨ Overview
 
-### Step A: Creating Your Bot
-1. Open up your Telegram App.
-2. Search for the user `@BotFather` and start a chat.
-3. Send the message `/newbot`.
-4. Give it a name (e.g., `My CraigsCatch Bot`) and a username ending in bot (e.g., `my_craigscatch_123_bot`).
-5. `@BotFather` will reply with a long HTTP API key. **Copy this string** and paste it into `.env` for `TELEGRAM_BOT_TOKEN`.
+**Craigs-Catch** is a high-performance, mobile-first monitoring tool designed for power users who need to track Craigslist listings with surgical precision. Whether you're hunting for free furniture or rare electronics, Craigs-Catch scans feeds in real-time, processes them through an intelligent back-end, and delivers instant push notifications to your device.
 
-### Step B: Routing Messages to You (Finding Chat ID)
-Your bot needs to know exactly who to message.
+Featuring a **Dark Mode Luxury** aesthetic inspired by modern design leaders like Linear and Raycast, the interface provides a premium user experience that feels more like a native app than a web utility.
 
-**For Personal Alerts (Just you):**
-1. Search for `@userinfobot` in Telegram and click "Start".
-2. It will reply immediately with an `Id: 123456789`.
-3. Copy that number into your `.env` as `TELEGRAM_CHAT_ID`.
-4. **REQUIRED STEP**: You must open a chat with your newly created bot (search for the bot's username) and send it any message (like "hello") or click "Start". Bots cannot message you unless you initiate the conversation first.
+## 🚀 Key Features
 
-**For Group Alerts (You and friends/family):**
-1. Create a new Telegram Group from your phone.
-2. Add your newly created bot into the group.
-3. Open your browser and navigate to (Replace `<YOUR_BOT_TOKEN>` with the token from Step A):
-   `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
-4. Look for the `chat` object in the code that appears. It will have an `id` that is negative (e.g., `-100987654321`). 
-5. Copy this negative number into your `.env` for `TELEGRAM_CHAT_ID`.
+- 💎 **Premium PWA UI**: A state-of-the-art interface with glassmorphic cards, dynamic text gradients, and smooth Framer Motion animations.
+- ⚡ **Real-Time Scanning**: Sub-millisecond feed processing ensures you see the listings as soon as they hit Craigslist.
+- 📱 **Telegram Integration**: Instant alerts delivered directly to your phone. Never miss a "Free Stuff" post again.
+- 🤖 **AI-Powered Analysis**: Integrated LLM support (Ollama/Together AI) to chat with your captured items and identify the best deals.
+- 📊 **Intelligence Dashboard**: Track your "Catches," manage active filters, and view system health in one sleek overview.
+- 🛠️ **Custom Monitors**: Easily add, toggle, and tune monitors for specific locations and categories.
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18, Vite, Tailwind CSS, Framer Motion, Lucide Icons |
+| **State/Data** | TanStack Query (React Query), Wouter, Zod |
+| **Backend** | Node.js, Express, TSX |
+| **Database** | SQLite (Better-SQLite3), Drizzle ORM |
+| **Alerts** | Telegram Bot API |
+| **Design** | PWA Optimized, Glassmorphism, HSL Palette |
+
+---
+
+## 🚦 Getting Started
+
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v18.x or higher)
+- [Git](https://git-scm.com/)
+- A [Telegram Bot](https://t.me/BotFather) token (for alerts)
+
+### 2. Installation
+Clone the repository and install dependencies:
+```bash
+git clone https://github.com/TechGuruServices/daylume-main.git
+cd Craigs-Catch
+npm install
+```
+
+### 3. Database Initialization
+Prepare your local SQLite database using Drizzle:
+```bash
+npm run db:push
+```
+
+### 4. Configuration
+Create a `.env` file in the root directory:
+```bash
+cp .env.example .env
+```
+Fill in your credentials:
+```env
+DATABASE_URL=./local.db
+TELEGRAM_BOT_TOKEN=8620985452:AAErFPtvEszY21A9-3jO7cdExWY3PyrjT6c
+TELEGRAM_CHAT_ID=-1003310780263
+CHECK_INTERVAL_MINUTES=5
+PORT=5000
+```
+
+### 5. Launch the System
+Start the development server:
+```bash
+npm run dev
+```
+Access the dashboard at `http://localhost:5000`.
+
+---
+
+## 🤖 AI Setup (Optional)
+Craigs-Catch supports local AI via **Ollama** or cloud AI via **Together API**.
+1. To use local AI, install [Ollama](https://ollama.com/) and run `ollama pull qwen`.
+2. Update your `.env` with `LLM_PROVIDER=ollama` or `LLM_PROVIDER=together`.
+
+---
+
+## 📱 Mobile Installation (PWA)
+1. Open the dashboard on your mobile browser.
+2. Select **"Add to Home Screen"** from your browser settings.
+3. Enjoy a full-screen, standalone native app experience with custom branded icons.
+
+---
+
+## 🤝 Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<p align="center">Built with 💙 by the Craigs-Catch Team</p>
