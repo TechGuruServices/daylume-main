@@ -33,3 +33,18 @@ vite.config.ts.*
 
 # Local database file
 local.db
+
+# Credential and secret files - NEVER commit these
+cracigs-credentiallstxt.txt
+.env.txt
+*.credentials.txt
+
+# Internal/tooling files not needed for deployment
+global-rules.yaml
+system-instructions.md
+llm-adapter.js
+process-logo.js
+dashboard.tsx
+
+# Editor workspace files
+*.code-workspace
