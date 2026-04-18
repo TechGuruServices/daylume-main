@@ -135,6 +135,7 @@ Access the dashboard at **[http://localhost:5000](http://localhost:5000)**.
    ```text
    https://sfbay.craigslist.org/search/sya?query=macbook&max_price=500
    ```
+
 3. **Paste into CraigsCatch** — Open your dashboard at `http://localhost:5000` and add it as a new monitor.
 4. **Sit back** — The background scanner will automatically check for new listings and push alerts to Telegram!
 
