@@ -32,15 +32,8 @@ export function Layout({ children }: LayoutProps) {
 
       {/* ── Ambient background art (fixed, non-interactive) ── */}
       <div
-        className="pointer-events-none fixed inset-0 z-0"
+        className="pointer-events-none fixed inset-0 z-0 ambient-background-art"
         aria-hidden="true"
-        style={{
-          background: [
-            "radial-gradient(ellipse 80% 50% at 5%   0%,   rgba(59,130,246,0.14) 0%, transparent 60%)",
-            "radial-gradient(ellipse 60% 50% at 95%  100%, rgba(139,92,246,0.12) 0%, transparent 60%)",
-            "radial-gradient(ellipse 50% 35% at 50%  110%, rgba(59,130,246,0.06) 0%, transparent 50%)",
-          ].join(", "),
-        }}
       />
 
       {/* ================================================================

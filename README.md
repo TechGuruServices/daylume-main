@@ -1,4 +1,4 @@
-# <p align="center"><img src="client/public/logo-512.png" width="128" height="128" /><br>Craigs-Catch</p>
+# <p align="center"><img src="client/public/logo-512.png" alt="Logo" width="128" height="128" /><br>Craigs-Catch</p>
 
 <p align="center">
   <b>Premium Craigslist Monitoring & Real-Time Alert System</b><br>
@@ -6,11 +6,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge&logo=appveyor" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/PRs-welcome-violet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-  <img src="https://img.shields.io/badge/SQLite-Drizzle-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge&logo=appveyor" alt="Version 1.0.0" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT" />
+  <img src="https://img.shields.io/badge/PRs-welcome-violet?style=for-the-badge" alt="PRs Welcome" />
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 18+" />
+  <img src="https://img.shields.io/badge/SQLite-Drizzle-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite & Drizzle" />
 </p>
 
 ---
@@ -119,6 +119,7 @@ Access the dashboard at **[http://localhost:5000](http://localhost:5000)**.
 
 > [!TIP]
 > For 24/7 operation without keeping the terminal open, use PM2:
+>
 > ```powershell
 > npm install -g pm2
 > pm2 start npm --name "craigscatch" -- run dev
@@ -130,7 +131,8 @@ Access the dashboard at **[http://localhost:5000](http://localhost:5000)**.
 
 1. **Search on Craigslist** — Go to [craigslist.org](https://craigslist.org) and perform your desired search (e.g., "macbook", max price $500, has image).
 2. **Copy the URL** — Grab the full URL from your browser. It should look like:
-   ```
+
+   ```text
    https://sfbay.craigslist.org/search/sya?query=macbook&max_price=500
    ```
 3. **Paste into CraigsCatch** — Open your dashboard at `http://localhost:5000` and add it as a new monitor.
@@ -149,11 +151,13 @@ Access the dashboard at **[http://localhost:5000](http://localhost:5000)**.
 ### Getting Your Chat ID
 
 **For personal alerts:**
+
 1. Search for **@userinfobot** in Telegram and tap "Start".
 2. It replies with your `Id` — copy this into `.env` as `TELEGRAM_CHAT_ID`.
 3. **Open a chat with your bot** and send it any message (e.g., "hello"). Bots cannot message you until you initiate.
 
 **For group alerts:**
+
 1. Create a new Telegram group and add your bot to it.
 2. Open `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates` in your browser.
 3. Find the `chat.id` (a negative number like `-100987654321`) and use it as `TELEGRAM_CHAT_ID`.
@@ -172,6 +176,7 @@ Craigs-Catch supports AI-powered chat to help you analyze and evaluate your capt
 1. Install [Ollama](https://ollama.com/).
 2. Pull a model: `ollama pull qwen`
 3. Set in `.env`:
+
    ```env
    OLLAMA_URL=http://localhost:11434/api/generate
    OLLAMA_MODEL=qwen
@@ -181,6 +186,7 @@ Craigs-Catch supports AI-powered chat to help you analyze and evaluate your capt
 
 1. Get an API key from [Groq](https://console.groq.com/).
 2. Set in `.env`:
+
    ```env
    GROQ_API_KEY=your_key_here
    MODEL_NAME=llama3-8b-8192
@@ -200,7 +206,7 @@ CraigsCatch is built as a Progressive Web App — install it on your phone for a
 
 ## 📂 Project Structure
 
-```
+```text
 Craigs-Catch/
 ├── client/               # React frontend (Vite)
 │   ├── public/           # PWA assets, icons, manifest
