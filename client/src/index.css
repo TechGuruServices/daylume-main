@@ -124,7 +124,10 @@
       radial-gradient(ellipse 60% 40% at 50% 50%,   rgba(59, 130, 246, 0.04), transparent);
     background-attachment: fixed;
     transition: background-color 0.3s ease, color 0.3s ease;
-    selection-color: hsl(var(--primary) / 0.3);
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.3);
   }
 
   h1, h2, h3, h4, h5, h6 {
