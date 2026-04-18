@@ -3,10 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertMonitorSchema } from "@shared/schema";
 import { type MonitorInput } from "@shared/routes";
 import { useCreateMonitor, useUpdateMonitor } from "@/hooks/use-monitors";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -52,18 +49,22 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+
+        {/* ── Monitor Name ── */}
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Monitor Name</FormLabel>
+              <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Monitor Name
+              </FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="e.g. SF Bay Area Free Stuff" 
-                  className="bg-background focus-visible:ring-primary/20 focus-visible:border-primary"
-                  {...field} 
+                <input
+                  placeholder="e.g. SF Bay Area Free Stuff"
+                  className="input-premium"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -71,60 +72,75 @@ export function MonitorForm({ initialData, onSuccess, onCancel }: MonitorFormPro
           )}
         />
 
+        {/* ── RSS URL ── */}
         <FormField
           control={form.control}
           name="url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Craigslist RSS URL</FormLabel>
+              <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Craigslist RSS URL
+              </FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="https://sfbay.craigslist.org/search/zip?format=rss" 
-                  className="bg-background focus-visible:ring-primary/20 focus-visible:border-primary"
-                  {...field} 
+                <input
+                  placeholder="https://sfbay.craigslist.org/search/zip?format=rss"
+                  className="input-premium font-mono text-xs"
+                  {...field}
                 />
               </FormControl>
-              <FormDescription className="text-xs mt-1 text-muted-foreground/80">
-                Go to Craigslist, do a search, and append <code className="bg-muted px-1 rounded text-foreground">?format=rss</code> to the URL.
+              <FormDescription className="text-[11px] mt-1.5 text-muted-foreground/70">
+                Go to Craigslist → search → append{" "}
+                <code className="bg-white/[0.06] px-1.5 py-0.5 rounded text-blue-400 text-[10px]">
+                  ?format=rss
+                </code>{" "}
+                to the URL.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* ── Active Toggle ── */}
         <FormField
           control={form.control}
           name="active"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border/50 p-4 bg-muted/10">
+            <FormItem className="flex flex-row items-center justify-between rounded-xl
+                                 border border-white/[0.07] bg-white/[0.03] p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Active Status</FormLabel>
-                <FormDescription>
-                  When disabled, this monitor will be skipped during checks.
+                <FormLabel className="text-sm font-medium text-foreground">Active Status</FormLabel>
+                <FormDescription className="text-xs text-muted-foreground/70">
+                  When disabled, this monitor will be skipped.
                 </FormDescription>
               </div>
               <FormControl>
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  className="data-[state=checked]:bg-primary"
+                  className="data-[state=checked]:bg-blue-500"
                 />
               </FormControl>
             </FormItem>
           )}
         />
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-border/50 mt-6">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isPending}>
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
+        {/* ── Actions ── */}
+        <div className="flex gap-3 pt-4 border-t border-white/[0.06]">
+          <button
+            type="button"
+            onClick={onCancel}
             disabled={isPending}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20"
+            className="btn-ghost flex-1"
           >
-            {isPending ? "Saving..." : isEditing ? "Save Changes" : "Add Monitor"}
-          </Button>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="btn-primary flex-1"
+          >
+            {isPending ? "Saving…" : isEditing ? "Save Changes" : "Add Monitor"}
+          </button>
         </div>
       </form>
     </Form>

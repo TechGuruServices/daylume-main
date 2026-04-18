@@ -12,12 +12,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useItems, useDeleteItem } from "@/hooks/use-items";
-import { useMonitors } from "@/hooks/use-monitors";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import type { Item, Monitor } from "@shared/schema";
+import { useItems, useDeleteItem } from "./client/src/hooks/use-items";
+import { useMonitors } from "./client/src/hooks/use-monitors";
+import { Button } from "./client/src/components/ui/button";
+import { Skeleton } from "./client/src/components/ui/skeleton";
+import { useToast } from "./client/src/hooks/use-toast";
+import type { Item, Monitor } from "./shared/schema";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -34,16 +34,16 @@ interface StatProps {
   icon: React.ReactNode;
   label: string;
   value: string | number;
-  accent?: string;          // tailwind color token, e.g. "blue", "violet", "emerald"
+  accent?: string; // tailwind color token, e.g. "blue", "violet", "emerald"
   delay?: number;
 }
 
 function StatCard({ icon, label, value, accent = "blue", delay = 0 }: StatProps) {
   const accentMap: Record<string, string> = {
-    blue:    "from-blue-500/20 to-blue-600/5  text-blue-400  shadow-blue-500/25",
-    violet:  "from-violet-500/20 to-violet-600/5 text-violet-400 shadow-violet-500/25",
+    blue: "from-blue-500/20 to-blue-600/5  text-blue-400  shadow-blue-500/25",
+    violet: "from-violet-500/20 to-violet-600/5 text-violet-400 shadow-violet-500/25",
     emerald: "from-emerald-500/20 to-emerald-600/5 text-emerald-400 shadow-emerald-500/25",
-    amber:   "from-amber-500/20 to-amber-600/5 text-amber-400 shadow-amber-500/25",
+    amber: "from-amber-500/20 to-amber-600/5 text-amber-400 shadow-amber-500/25",
   };
   const colors = accentMap[accent] ?? accentMap.blue;
 
@@ -92,17 +92,17 @@ export default function Dashboard() {
     items?.filter((item: Item) => (filterMonitor === "all" ? true : item.monitorId === filterMonitor)) ?? [];
 
   const activeMonitors = monitors?.filter((m: Monitor) => m.active).length ?? 0;
-  const todayCount = items?.filter((i: Item) => {
-    const d = new Date(i.createdAt);
-    const now = new Date();
-    return d.toDateString() === now.toDateString();
-  }).length ?? 0;
+  const todayCount =
+    items?.filter((i: Item) => {
+      const d = new Date(i.createdAt);
+      const now = new Date();
+      return d.toDateString() === now.toDateString();
+    }).length ?? 0;
 
   // ──────────────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-8">
-
       {/* ═══════════════════════════════════════════
           SECTION 1  —  Welcome / Hero
           ═══════════════════════════════════════════ */}

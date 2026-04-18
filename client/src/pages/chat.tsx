@@ -3,11 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 import type { Message } from "@shared/schema";
 
 export default function Chat() {
@@ -50,110 +49,123 @@ export default function Chat() {
   };
 
   return (
-    <div className="container mx-auto max-w-5xl h-[calc(100vh-10rem)] animate-in fade-in duration-700">
-      <div className="mb-8">
-        <h1 className="text-4xl font-display font-extrabold tracking-tight text-glow bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary bg-300% animate-gradient">
+    <div className="flex flex-col h-[calc(100dvh-10rem)]">
+
+      {/* ── Header ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-4"
+      >
+        <h1 className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-gradient-animate">
           AI Assistant
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg font-medium">Chat with AI to filter and analyze your Craigslist finds.</p>
-      </div>
-      
-      <Card className="h-full flex flex-col glass-card border-white/5 rounded-3xl overflow-hidden relative shadow-2xl">
-        {/* Ambient background glow */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+        <p className="text-muted-foreground mt-1.5 text-sm font-medium leading-relaxed">
+          Chat with AI to filter and analyze your Craigslist finds.
+        </p>
+      </motion.section>
 
-        <CardHeader className="border-b border-white/5 bg-background/40 backdrop-blur-md z-10 px-8 py-6">
-          <CardTitle className="flex items-center gap-3 text-glow">
-            <div className="bg-primary/20 p-2.5 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(20,184,166,0.2)]">
-              <Bot className="w-6 h-6 text-primary" />
-            </div>
-            <span className="font-display font-bold text-2xl tracking-wide text-foreground">CraigsCatch AI</span>
-          </CardTitle>
-        </CardHeader>
-        
-        <CardContent className="flex-1 overflow-hidden p-0 z-10">
-          <ScrollArea className="h-full px-8 py-6">
-            <div className="space-y-6">
-              {messages?.map((msg) => (
+      {/* ── Chat container ── */}
+      <div className="flex-1 flex flex-col glass-card rounded-3xl overflow-hidden relative">
+
+        {/* Ambient blurs */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-500/5 rounded-full blur-[80px] pointer-events-none" />
+
+        {/* Chat title bar */}
+        <div className="border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-md z-10 px-5 py-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-500/10 border border-blue-500/20 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+          </div>
+          <span className="font-display font-bold text-base text-foreground">Craigs-Catch AI</span>
+        </div>
+
+        {/* Messages area */}
+        <ScrollArea className="flex-1 px-4 py-5 z-10">
+          <div className="space-y-4">
+            {messages?.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
                 <div
-                  key={msg.id}
-                  className={`flex ${
-                    msg.role === "user" ? "justify-end" : "justify-start"
+                  className={`flex gap-3 max-w-[85%] ${
+                    msg.role === "user" ? "flex-row-reverse" : "flex-row"
                   }`}
                 >
+                  {/* Avatar */}
                   <div
-                    className={`flex gap-4 max-w-[85%] ${
-                      msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
+                      msg.role === "user"
+                        ? "bg-gradient-to-br from-blue-500 to-violet-600 border-blue-500/30 text-white"
+                        : "bg-white/[0.05] border-white/[0.08] text-blue-400"
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border ${
-                      msg.role === "user" 
-                        ? "bg-gradient-to-br from-primary to-accent border-primary/50 text-white" 
-                        : "bg-muted/80 backdrop-blur border-white/10 text-primary"
-                    }`}>
-                      {msg.role === "user" ? (
-                        <User className="w-5 h-5" />
-                      ) : (
-                        <Bot className="w-5 h-5" />
-                      )}
-                    </div>
-                    <div
-                      className={`rounded-2xl px-6 py-4 shadow-sm border ${
-                        msg.role === "user"
-                          ? "bg-primary/10 border-primary/20 text-foreground"
-                          : "bg-card/60 backdrop-blur border-white/5 text-foreground/90"
-                      }`}
-                    >
-                      <p className="text-base leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    {msg.role === "user" ? (
+                      <User className="w-3.5 h-3.5" />
+                    ) : (
+                      <Bot className="w-3.5 h-3.5" />
+                    )}
+                  </div>
+
+                  {/* Bubble */}
+                  <div
+                    className={`rounded-2xl px-4 py-3 border text-sm leading-relaxed ${
+                      msg.role === "user"
+                        ? "bg-blue-500/10 border-blue-500/15 text-foreground"
+                        : "bg-white/[0.03] border-white/[0.06] text-foreground/90"
+                    }`}
+                  >
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Typing indicator */}
+            {chatMutation.isPending && (
+              <div className="flex justify-start animate-fade-up">
+                <div className="flex gap-3 max-w-[80%]">
+                  <div className="w-8 h-8 rounded-xl bg-white/[0.05] border border-white/[0.08] text-blue-400 flex items-center justify-center shrink-0 animate-pulse">
+                    <Bot className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl px-4 py-3">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400/50 animate-bounce" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400/50 animate-bounce [animation-delay:0.15s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400/50 animate-bounce [animation-delay:0.3s]" />
                     </div>
                   </div>
                 </div>
-              ))}
-              
-              {chatMutation.isPending && (
-                <div className="flex justify-start animate-in fade-in duration-300">
-                  <div className="flex gap-4 max-w-[80%]">
-                    <div className="w-10 h-10 rounded-2xl bg-muted/80 backdrop-blur border-white/10 text-primary flex items-center justify-center shrink-0 shadow-lg animate-pulse">
-                      <Bot className="w-5 h-5" />
-                    </div>
-                    <div className="bg-card/60 backdrop-blur border-white/5 rounded-2xl px-6 py-4 shadow-sm border">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce"></span>
-                        <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.2s]"></span>
-                        <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.4s]"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={scrollRef} />
-            </div>
-          </ScrollArea>
-        </CardContent>
-        
-        <CardFooter className="border-t border-white/5 bg-background/60 backdrop-blur-md z-10 px-8 py-5">
-          <form onSubmit={handleSubmit} className="flex w-full gap-4 relative">
-            <Input
+              </div>
+            )}
+            <div ref={scrollRef} />
+          </div>
+        </ScrollArea>
+
+        {/* Input bar */}
+        <div className="border-t border-white/[0.06] bg-white/[0.02] backdrop-blur-md z-10 px-4 py-3.5">
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask CraigsCatch AI..."
+              placeholder="Ask Craigs-Catch AI…"
               disabled={chatMutation.isPending}
               data-testid="input-chat-message"
-              className="h-14 rounded-2xl bg-muted/50 border-white/10 focus-visible:ring-primary/50 px-6 text-base tracking-wide shadow-inner"
+              className="input-premium flex-1 rounded-xl py-3"
             />
-            <Button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={chatMutation.isPending}
               data-testid="button-send-message"
-              className="h-14 px-8 rounded-2xl bg-gradient-to-br from-primary to-accent hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-shadow duration-300 font-bold"
+              className="btn-primary px-5 rounded-xl"
             >
-              <Send className="w-5 h-5 mr-2" />
-              Send
-            </Button>
+              <Send className="w-4 h-4" />
+            </button>
           </form>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

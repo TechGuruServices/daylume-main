@@ -1,168 +1,83 @@
-# CraigsCatch — Craigslist Free Item Scanner
+# Craigs-Catch — Craigslist Item Scanner (Live Setup Guide)
 
-A self-hosted web app (PWA) that monitors Craigslist search results for free items and sends real-time Telegram alerts.
+This guide provides step-by-step instructions for taking this project from code to a **Live, functioning system** using **real data** and **no placeholders**.
 
-## Features
+## 1. Entering the Correct Directory
+When opening your terminal, ensure you traverse into the correct project folder before running any commands. Otherwise, you will receive `Missing script` errors.
+```powershell
+cd "Craigslist-Item-Scanner-main"
+```
 
-- 🔍 **Craigslist monitoring** — Track Craigslist search results automatically
-- 📨 **Telegram alerts** — Instant notifications for new free items
-- 🤖 **AI assistant** — Optional Ollama-powered chat for summaries and insights
-- 📱 **PWA experience** — Installable on desktop and mobile
-- 🗄️ **Local storage** — SQLite persistence via Drizzle ORM
+## 2. Install Dependencies
+Install all required Node.js packages for the server and web application:
+```powershell
+npm install
+```
 
----
+## 3. Database Setup (Crucial for Real Data)
+Before starting the application, you must initialize the database schema. This creates the exact tables (`local.db` file) necessary for persistence, preventing crashes when the real app tries to write data.
+```powershell
+npm run db:push
+```
 
-## Local Development
+## 4. Environment Variables & Authentication
+You need real credentials to ensure the bot can safely reach out to you via Telegram without placeholders.
 
-### Prerequisites
-
-- Node.js 20+
-- (Optional) [Ollama](https://ollama.ai) for the AI chat feature
-- (Optional) Telegram bot token and chat ID for notifications
-
-### Setup
-
-1. **Clone the repo**
-
-   ```bash
-   git clone https://github.com/TechGuruServices/daylume-main.git
-   cd Craigslist-Item-Scanner-main
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Copy the example environment file**
-
-   ```bash
+1. **Create the Environment File** by copying the template file:
+   ```powershell
    cp .env.example .env
+   # Or manually rename the file to just ".env"
    ```
+2. **Edit `.env`** with real live values:
+   - `DATABASE_URL=./local.db` (Leave as is for SQLite)
+   - `TELEGRAM_BOT_TOKEN=your_real_bot_token` (Replace with token from @BotFather)
+   - `TELEGRAM_CHAT_ID=your_real_chat_id` (Replace with Chat ID)
+   - `CHECK_INTERVAL_MINUTES=5` (How often you want the system to check for live updates)
+   - `PORT=5000` (Local web dashboard port)
 
-4. **Edit `.env`**
-   - `DATABASE_URL=./local.db`
-   - `PORT=5000` (or another port if needed)
-   - `CHECK_INTERVAL_MINUTES=10`
-   - `OLLAMA_URL` and `OLLAMA_MODEL` if using AI chat
-   - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` if using alerts
+   *(For complete steps on getting Telegram credentials, read the "Live Telegram Setup" section below).*
 
-5. **Start the app**
+## 5. Running the Application Live
+Start up the web dashboard and the background process:
+```powershell
+npm run dev
+```
+*(Note for 24/7 Run: If you wish to run this indefinitely without keeping the terminal open, you should use PM2: `npm install -g pm2` followed by `pm2 start npm --name "craigscatch" -- run dev`)*
 
-   ```bash
-   npm run dev
-   ```
+## 6. Configuring Real Live Filters (Web Dashboard)
+Once your server is running, navigate to [http://localhost:5000](http://localhost:5000) using your web browser. 
 
-6. **Open the app**
-   - [http://localhost:5000](http://localhost:5000)
-
----
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `DATABASE_URL` | ✅ Yes | `./local.db` | SQLite database file path |
-| `PORT` | No | `5000` | Server port |
-| `CHECK_INTERVAL_MINUTES` | No | `15` | Poll interval in minutes |
-| `OLLAMA_URL` | No | `http://localhost:11434/api/generate` | Ollama API endpoint |
-| `OLLAMA_MODEL` | No | `qwen` | Ollama model name |
-| `TELEGRAM_BOT_TOKEN` | No | — | Telegram bot token from [@BotFather](https://t.me/botfather) |
-| `TELEGRAM_CHAT_ID` | No | — | Telegram chat or group ID for alerts |
-
-> Note: `.env` is excluded from git, so your secrets stay local.
+To use real data instead of placeholders:
+1. **Navigate to real Craigslist**: Go to craigslist.org and perform your exact desired search (e.g., search for "macbook", check "has image", select the max price).
+2. **Copy the URL**: Copy the URL from your browser's address bar. It should look something like `https://sfbay.craigslist.org/search/sya?query=macbook&max_price=500`.
+3. **Add to Craigs-Catch**: In your dashboard on `http://localhost:5000`, paste this exact URL into the "Add Feed" or "Filter" section. 
+4. **Live Feed Process**: The background script will immediately execute, download the real live listings directly from your link, save them to the local database, and ping your Telegram account!
 
 ---
 
-## Telegram Alerts Setup
+## Live Telegram Setup (Step-by-Step)
+For getting actual production push notifications on your phone, you must link your own bot.
 
-### 1. Create a Telegram bot
+### Step A: Creating Your Bot
+1. Open up your Telegram App.
+2. Search for the user `@BotFather` and start a chat.
+3. Send the message `/newbot`.
+4. Give it a name (e.g., `My CraigsCatch Bot`) and a username ending in bot (e.g., `my_craigscatch_123_bot`).
+5. `@BotFather` will reply with a long HTTP API key. **Copy this string** and paste it into `.env` for `TELEGRAM_BOT_TOKEN`.
 
-1. Open Telegram and message [@BotFather](https://t.me/botfather)
-2. Send `/newbot`
-3. Follow the prompts and copy the bot token
+### Step B: Routing Messages to You (Finding Chat ID)
+Your bot needs to know exactly who to message.
 
-### 2. Get your Telegram chat ID
+**For Personal Alerts (Just you):**
+1. Search for `@userinfobot` in Telegram and click "Start".
+2. It will reply immediately with an `Id: 123456789`.
+3. Copy that number into your `.env` as `TELEGRAM_CHAT_ID`.
+4. **REQUIRED STEP**: You must open a chat with your newly created bot (search for the bot's username) and send it any message (like "hello") or click "Start". Bots cannot message you unless you initiate the conversation first.
 
-- For private notifications, message [@userinfobot](https://t.me/userinfobot)
-- Use the returned user ID as `TELEGRAM_CHAT_ID`
-
-### 3. Use a Telegram group for both users
-
-1. Create a Telegram group or supergroup
-2. Add your friend to the group
-3. Add your bot to the group
-4. Make the bot an admin so it can post messages
-5. Send a message in the group to generate activity
-6. Retrieve the group chat ID with the Bot API:
-
-   ```bash
-   curl -s "https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates" | grep -o '"id":[-0-9]\+' | head -1
-   ```
-
-7. Set `TELEGRAM_CHAT_ID` to the group ID, like `-1001234567890`
-
-### 4. Test Telegram notifications
-
-- Use the built-in test route:
-
-  ```bash
-  curl -X POST http://localhost:5000/api/test-telegram
-  ```
-
-- Or trigger a manual feed check:
-
-  ```bash
-  curl -X POST http://localhost:5000/api/jobs/check
-  ```
-
----
-
-## Troubleshooting
-
-- **No Telegram messages?**
-  - Confirm `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are set correctly in `.env`.
-  - Make sure the bot is started in Telegram by sending it a message.
-  - If using a group, ensure the bot is added to the group and has permission to send messages.
-
-- **Bot returns 401 Unauthorized**
-  - The token is invalid or was copied incorrectly.
-  - Regenerate the token with [@BotFather](https://t.me/botfather) and update `.env`.
-
-- **Messages appear in private chat but not group**
-  - Check that the group ID begins with `-100` for a supergroup.
-  - Ensure the bot is a member and admin in the group.
-  - Use `getUpdates` only after sending a message in the group to populate the ID.
-
-- **App does not start / address in use**
-  - Change `PORT` in `.env` to an unused port (for example, `5001`).
-  - Restart the app after updating `.env`.
-
----
-
-## How It Works
-
-1. Add a Craigslist search URL from your target region
-2. The app polls the URL every `CHECK_INTERVAL_MINUTES`
-3. New items are parsed and deduplicated
-4. Alerts are sent to Telegram for each new listing
-5. The dashboard displays discovered items and monitors
-
----
-
-## Notes
-
-- The app currently uses **SQLite** for local storage.
-- If you want both you and a friend to receive alerts, use a **Telegram group** chat ID.
-- Do not commit your `.env` file or bot token to source control.
-
----
-
-## Tech Stack
-
-- **Frontend**: React, Vite, TailwindCSS, shadcn/ui
-- **Backend**: Express, Node.js
-- **Database**: SQLite + Drizzle ORM
-- **AI**: Optional Ollama integration
-- **Notifications**: Telegram Bot API
+**For Group Alerts (You and friends/family):**
+1. Create a new Telegram Group from your phone.
+2. Add your newly created bot into the group.
+3. Open your browser and navigate to (Replace `<YOUR_BOT_TOKEN>` with the token from Step A):
+   `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+4. Look for the `chat` object in the code that appears. It will have an `id` that is negative (e.g., `-100987654321`). 
+5. Copy this negative number into your `.env` for `TELEGRAM_CHAT_ID`.
