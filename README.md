@@ -1,10 +1,10 @@
 <p align="center">
   <img src="static/assets/orb_float_slow.gif" alt="Daylume Logo" width="100" height="90">
 </p>
-<h1 align="center">✨ DAYLUME – Bring Your Day Into Focus</h1>
+<h1 align="center">✨ DAYLUME </h1>
 
 <p align="center">
-  <strong>Your Personal Productivity Companion</strong>
+  <strong>Bring Your Day Into Focus ― Your Personal Productivity Companion</strong>
 </p>
 
 <p align="center">
