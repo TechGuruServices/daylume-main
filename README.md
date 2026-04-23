@@ -4,7 +4,7 @@
 <h1 align="center">✨ DAYLUME </h1>
 
 <p align="center">
-  <strong>Bring Your Day Into Focus ― Your Personal Productivity Companion</strong>
+  <h1>Bring Your Day Into Focus ― Your Personal Productivity Companion<h1>
 </p>
 
 <p align="center">
