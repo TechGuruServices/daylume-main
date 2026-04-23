@@ -33,7 +33,6 @@
 ## 🌟 Features
 
 ### 📋 **Task Management**
-
 - Create, organize, and prioritize tasks with ease
 - Set due dates, times, and priority levels (Low, Medium, High, Urgent)
 - Track task status: Pending → In Progress → Completed
@@ -41,7 +40,6 @@
 - Swipe gestures for quick actions
 
 ### 🎯 **Habit Tracking**
-
 - Build positive habits with daily, weekly, or monthly tracking
 - Visual streak counters to maintain motivation
 - Custom icons and colors for each habit
@@ -49,7 +47,6 @@
 - Habit completion insights
 
 ### 🏆 **Goal Setting**
-
 - Set and track long-term goals with milestones
 - Link tasks and habits to goals for integrated progress
 - Categories: Health, Career, Personal, Financial, Learning, Relationships
@@ -57,7 +54,6 @@
 - Goal status management (Active, Completed, Paused)
 
 ### 📅 **Calendar & Events**
-
 - Beautiful calendar view with event management
 - Create recurring events (Daily, Weekly, Monthly)
 - Color-coded categories: Work, Personal, Health, Other
@@ -65,7 +61,6 @@
 - Event reminders and notifications
 
 ### 📓 **Journal**
-
 - Daily journaling with mood tracking
 - Rich text entries with tags
 - Mood selector: 😊 😐 😢 😡 😴 🤗 😰
@@ -73,7 +68,6 @@
 - Reflection prompts
 
 ### ⏰ **Alarms & Timers**
-
 - Set multiple alarms with custom labels
 - Repeat options: Once, Daily, Weekdays, Weekends, Custom
 - Countdown timers for focused sessions
@@ -81,22 +75,18 @@
 - Quick timer presets
 
 ### 🧮 **Calculator**
-
 - Clean, intuitive calculator interface
 - Calculation history
 - Scientific functions
 - Quick access from anywhere
-- Full keyboard shortcut support
 
 ### 🤖 **AI Assistant**
-
-- Integrated 100% local, private, and free AI chat powered by Ollama out-of-the-box
+- Integrated AI chat powered by Hugging Face
 - Context-aware productivity assistance
 - Get suggestions for tasks, habits, and goals
-- Zero API keys required and no data leaves your device
+- Natural language processing
 
 ### 📊 **Weekly Review**
-
 - Comprehensive weekly summaries
 - Task completion rates
 - Habit consistency metrics
@@ -104,7 +94,6 @@
 - Productivity scoring
 
 ### 🎨 **Customization**
-
 - **Multiple Visual Themes**: Default, Aurora, Sunset, Ocean, Forest, Minimal
 - **Theme Presets**: Midnight, Dawn, Ocean, Sunset, Forest, Aurora, Ember
 - **Glassmorphism UI** with adjustable intensity
@@ -115,32 +104,15 @@
 - **Custom Background Images** with shuffle support
 
 ### 📱 **Progressive Web App**
-
-- Offline-first architecture with dedicated fallback page
-- App-like experience with quick capture shortcuts
-
-#### Desktop (Chrome / Edge)
-
-1. Open Daylume in your browser.
-2. Click the install icon (a screen with a down arrow) in the right side of the URL bar.
-3. Daylume will now run as a native desktop app.
-
-#### iOS (Safari)
-
-1. Open Daylume in Safari.
-2. Tap the **Share** button at the bottom.
-3. Scroll down and tap **Add to Home Screen**.
-
-#### Android (Chrome)
-
-1. Open Daylume in Chrome.
-2. Tap the three-dot menu (⋮) in the top right.
-3. Tap **Add to Home screen** or **Install app**.
+- Install on any device (iOS, Android, Desktop)
+- Offline-first architecture
+- Push notifications
+- App-like experience
+- Quick capture shortcuts
 
 ### 🔐 **Privacy & Security**
-
 - Local-first data storage
-- Optional Supabase cloud sync (secure environment variable configuration)
+- Optional Supabase cloud sync
 - Encrypted sensitive data
 - No tracking or analytics
 
@@ -170,7 +142,7 @@
 | **Language** | [TypeScript](https://www.typescriptlang.org/) |
 | **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
 | **Database** | [Supabase](https://supabase.com/) (optional cloud sync) |
-| **AI** | [Ollama](https://ollama.com/) (Default local models) |
+| **AI** | [Hugging Face Inference API](https://huggingface.co/) |
 | **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/) |
 | **PWA** | [Vite PWA Plugin](https://vite-pwa-org.netlify.app/) |
 | **Icons** | Custom glassmorphic icons |
@@ -181,51 +153,44 @@
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18+
+- [Node.js](https://nodejs.org/) 18+ 
 - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 - Git
 
 ### Installation
 
 1. **Clone the repository**
-
    ```bash
    git clone https://github.com/TechGuruServices/daylume.git
    cd daylume
    ```
 
 2. **Install dependencies**
-
    ```bash
    npm install
    ```
 
-3. **Set up Local AI (Ollama)**
-
-   Daylume uses Ollama for local, private AI features without API keys.
-   - Install [Ollama](https://ollama.com)
-   - Pull a model: `ollama pull llama3.2`
-   - Start the server: `ollama serve`
-
-   Daylume connects seamlessly to `http://localhost:11434`.
-
-4. **Environment variables (Optional)**
-
-   If you are using Supabase for cloud sync, create a `.env.local` file:
-
+3. **Set up environment variables**
+   
+   Create a `.env.local` file in the root directory:
    ```env
+   # Supabase (Optional - for cloud sync)
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+   # Hugging Face AI (Required for AI chat)
+   HF_TOKEN=your_hugging_face_token
+   HF_MODEL=openai/gpt-oss-120b:fastest
+   HF_BASE_URL=https://router.huggingface.co/v1
    ```
 
-5. **Start the development server**
-
+4. **Start the development server**
    ```bash
    npm run dev
    ```
 
-6. **Open your browser**
-
+5. **Open your browser**
+   
    Navigate to [http://localhost:5173](http://localhost:5173)
 
 ---
@@ -251,22 +216,21 @@ Daylume is configured for seamless deployment on Cloudflare Pages with serverles
 1. **Connect your GitHub repository** to Cloudflare Pages
 
 2. **Configure build settings:**
-
    | Setting | Value |
    |---------|-------|
    | Build command | `npm run build` |
    | Build output directory | `.svelte-kit/cloudflare` |
 
-3. **Add environment variables** (Optional) in Cloudflare Dashboard:
-   - Supabase connection variables if you're using cloud sync.
-   *(Note: Daylume's AI functionality relies on the user's local Ollama server `http://localhost:11434`, so no server-side AI keys are needed!)*
+3. **Add environment variables** in Cloudflare Dashboard:
+   - `HF_TOKEN` - Your Hugging Face API token
+   - `HF_MODEL` - AI model identifier
+   - `HF_BASE_URL` - Hugging Face API base URL
 
 4. **Deploy!** 🚀
 
 ### Other Platforms
 
 Daylume can also be deployed to:
-
 - Vercel (use `@sveltejs/adapter-vercel`)
 - Netlify (use `@sveltejs/adapter-netlify`)
 - Node.js server (use `@sveltejs/adapter-node`)
@@ -369,13 +333,13 @@ This project is proprietary software. All rights reserved.
 - [SvelteKit](https://kit.svelte.dev/) - The framework that makes development a joy
 - [Tailwind CSS](https://tailwindcss.com/) - For beautiful, responsive styling
 - [Supabase](https://supabase.com/) - Backend as a service
-- [Ollama](https://ollama.com/) - Local AI model hosting
+- [Hugging Face](https://huggingface.co/) - AI model hosting
 - [Cloudflare](https://cloudflare.com/) - Edge deployment platform
 
 ---
 
 <p align="center">
-  <strong>Built with 💜 by TechGuruServices</strong>
+  <strong>powered by TECHGURU</strong>
 </p>
 
 <p align="center">
